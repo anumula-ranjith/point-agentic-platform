@@ -1097,7 +1097,7 @@ a.brand:hover{background:var(--panel)}
       <div class="card">
         <div class="card-head">
           <h3 class="card-title">Top positions</h3>
-          <span class="chip ghost">38 of 142 shown</span>
+          <span class="chip ghost" id="pos-count">38 of 142 shown</span>
           <span class="spacer"></span>
           <div class="seg">
             <button class="seg-btn active">All</button>
@@ -1945,33 +1945,97 @@ a.brand:hover{background:var(--panel)}
     go(el.dataset.view);
   }));
 
-  /* ---- positions data ---- */
-  const positions = [
-    ['NVDA','NVIDIA Corp','L','46,000','$8.47M','8.2%','+1.4%','+6.1%','1.82','med','trim'],
-    ['AAPL','Apple Inc','L','36,200','$8.47M','6.8%','+0.6%','+2.2%','1.04','low','ok'],
-    ['MSFT','Microsoft','L','20,500','$8.46M','6.8%','−0.3%','−2.4%','0.96','high','trim'],
-    ['META','Meta Platforms','L','14,300','$8.47M','6.8%','+2.1%','+9.4%','1.21','low','crowded'],
-    ['GOOGL','Alphabet','L','42,000','$7.09M','5.7%','+0.4%','+1.1%','1.02','low','ok'],
-    ['AMZN','Amazon','L','28,400','$5.72M','4.6%','+0.9%','+3.8%','1.14','low','ok'],
-    ['UBER','Uber Tech','L','68,000','$5.61M','4.5%','+1.8%','+7.2%','1.28','low','add'],
-    ['TSLA','Tesla','L','17,200','$4.22M','3.4%','−1.1%','−4.6%','1.74','med','stop'],
-    ['COIN','Coinbase','L','19,200','$4.21M','3.4%','−2.3%','+11.8%','2.41','med','watch'],
-    ['MSTR','MicroStrategy','L','17,500','$6.18M','5.0%','−3.1%','+14.2%','3.12','med','hedge'],
-    ['ANET','Arista','L','8,900','$3.67M','2.9%','+1.2%','+5.4%','1.33','low','add'],
-    ['UNH','UnitedHealth','S','−9,100','−$4.90M','3.9%','+0.3%','−2.1%','0.74','med','watch'],
-    ['WBA','Walgreens','S','−142,000','−$1.18M','0.9%','−1.4%','−8.9%','0.91','low','ok'],
-    ['PEP','PepsiCo','S','−21,000','−$3.42M','2.7%','+0.2%','+1.4%','0.58','low','cover'],
-  ];
+  /* ---- per-fund detail datasets (positions + PnL) ---- */
   const flagMap = {
     trim:'pill orange', ok:'pill good', high:'pill red', crowded:'pill orange',
     add:'pill good', stop:'pill red', watch:'pill ok', hedge:'pill red', cover:'pill orange'
   };
-  const posRows = document.getElementById('pos-rows');
-  if(posRows){
-    posRows.innerHTML = positions.map(p=>{
-      const dayCls = p[6].startsWith('−')?'dn':'up';
-      const mtdCls = p[7].startsWith('−')?'dn':'up';
-      const driftCls = p[9]==='high'?'red':p[9]==='med'?'warn':'muted';
+  const fundDetail = {
+    alpha:{
+      shown:'38 of 142 shown',
+      positions:[
+        ['NVDA','NVIDIA Corp','L','46,000','$8.47M','8.2%','+1.4%','+6.1%','1.82','med','trim'],
+        ['AAPL','Apple Inc','L','36,200','$8.47M','6.8%','+0.6%','+2.2%','1.04','low','ok'],
+        ['MSFT','Microsoft','L','20,500','$8.46M','6.8%','−0.3%','−2.4%','0.96','high','trim'],
+        ['META','Meta Platforms','L','14,300','$8.47M','6.8%','+2.1%','+9.4%','1.21','low','crowded'],
+        ['GOOGL','Alphabet','L','42,000','$7.09M','5.7%','+0.4%','+1.1%','1.02','low','ok'],
+        ['AMZN','Amazon','L','28,400','$5.72M','4.6%','+0.9%','+3.8%','1.14','low','ok'],
+        ['UBER','Uber Tech','L','68,000','$5.61M','4.5%','+1.8%','+7.2%','1.28','low','add'],
+        ['TSLA','Tesla','L','17,200','$4.22M','3.4%','−1.1%','−4.6%','1.74','med','stop'],
+        ['COIN','Coinbase','L','19,200','$4.21M','3.4%','−2.3%','+11.8%','2.41','med','watch'],
+        ['MSTR','MicroStrategy','L','17,500','$6.18M','5.0%','−3.1%','+14.2%','3.12','med','hedge'],
+        ['ANET','Arista','L','8,900','$3.67M','2.9%','+1.2%','+5.4%','1.33','low','add'],
+        ['UNH','UnitedHealth','S','−9,100','−$4.90M','3.9%','+0.3%','−2.1%','0.74','med','watch'],
+        ['WBA','Walgreens','S','−142,000','−$1.18M','0.9%','−1.4%','−8.9%','0.91','low','ok'],
+        ['PEP','PepsiCo','S','−21,000','−$3.42M','2.7%','+0.2%','+1.4%','0.58','low','cover']
+      ],
+      pnlDay:[{t:'NVDA',v:82},{t:'META',v:71},{t:'UBER',v:58},{t:'ANET',v:41},{t:'AMZN',v:33},{t:'MSFT',v:-24},{t:'TSLA',v:-38},{t:'COIN',v:-52},{t:'MSTR',v:-61},{t:'AAPL',v:19}],
+      pnlNames:[{t:'NVDA',v:94},{t:'META',v:78},{t:'UBER',v:62},{t:'ANET',v:51},{t:'NFLX',v:41},{t:'GOOGL',v:28},{t:'AMZN',v:22},{t:'AAPL',v:14},{t:'CRM',v:-9},{t:'PEP',v:-14},{t:'TSLA',v:-29},{t:'MSFT',v:-38},{t:'COIN',v:-44},{t:'MSTR',v:-58}]
+    },
+    global:{
+      shown:'24 of 61 shown',
+      positions:[
+        ['TY','10Y UST future','S','−540','−$62.0M','18%','−0.2%','+1.4%','—','low','hedge'],
+        ['ES','S&P 500 future','L','320','$48.2M','14%','+0.4%','+2.1%','1.00','low','ok'],
+        ['GC','Gold future','L','180','$34.6M','11%','+0.9%','+6.2%','—','low','add'],
+        ['6E','EUR/USD future','L','210','$29.1M','9%','+0.3%','−0.8%','—','med','watch'],
+        ['CL','WTI crude future','L','140','$11.2M','4%','+1.4%','+3.1%','—','med','ok'],
+        ['DX','USD index future','S','−90','−$9.4M','3%','−0.3%','−1.2%','—','low','ok'],
+        ['JPY','USD/JPY future','S','−120','−$8.9M','3%','+0.1%','−2.4%','—','med','watch'],
+        ['EEM','EM equity ETF','L','150,000','$6.4M','2.5%','+0.6%','+1.1%','1.05','low','ok'],
+        ['FXI','China LC ETF','L','210,000','$6.1M','2.4%','+2.2%','+4.8%','1.10','med','add'],
+        ['TLT','20Y Treasury ETF','S','−64,000','−$5.6M','2.1%','−0.4%','+0.9%','—','low','hedge'],
+        ['HG','Copper future','L','95','$4.2M','1.6%','+0.8%','+2.6%','—','med','ok'],
+        ['BTP','Italy 10Y future','S','−40','−$5.1M','1.9%','−0.1%','+0.5%','—','low','watch']
+      ],
+      pnlDay:[{t:'Gold',v:71},{t:'ES',v:44},{t:'FXI',v:38},{t:'Crude',v:29},{t:'Copper',v:18},{t:'EUR',v:-12},{t:'JPY',v:-22},{t:'TY',v:-31},{t:'TLT',v:-18},{t:'USD',v:-14}],
+      pnlNames:[{t:'Gold',v:88},{t:'Rates',v:-54},{t:'EM eq',v:41},{t:'Energy',v:36},{t:'FX',v:-28},{t:'Equity idx',v:52},{t:'Credit',v:-16},{t:'Copper',v:22}]
+    },
+    neutral:{
+      shown:'20 of 88 shown · 44 pairs',
+      positions:[
+        ['LLY','Eli Lilly','L','9,800','$8.1M','5.2%','+0.7%','+3.1%','0.62','low','ok'],
+        ['NVO','Novo Nordisk','S','−64,000','−$7.9M','5.1%','−0.4%','−1.8%','0.58','low','ok'],
+        ['V','Visa','L','22,000','$6.8M','4.4%','+0.3%','+1.2%','0.44','low','ok'],
+        ['MA','Mastercard','S','−12,400','−$6.6M','4.2%','−0.2%','−0.9%','0.46','low','ok'],
+        ['COST','Costco','L','7,100','$6.4M','4.1%','+0.5%','+2.0%','0.51','low','add'],
+        ['WMT','Walmart','S','−78,000','−$6.2M','4.0%','−0.3%','−0.6%','0.49','low','ok'],
+        ['HD','Home Depot','L','14,500','$5.9M','3.8%','+0.4%','+1.5%','0.72','low','ok'],
+        ['LOW','Lowe\'s','S','−22,000','−$5.7M','3.7%','−0.2%','−0.4%','0.70','low','ok'],
+        ['PG','Procter & Gamble','L','34,000','$5.6M','3.6%','+0.1%','+0.8%','0.38','low','ok'],
+        ['CL','Colgate','S','−58,000','−$5.4M','3.5%','−0.1%','−0.3%','0.36','low','ok'],
+        ['GOOGL','Alphabet','L','21,000','$3.5M','2.3%','+0.4%','+1.0%','0.52','low','ok'],
+        ['META','Meta','S','−5,900','−$3.5M','2.2%','−0.3%','−0.7%','0.55','med','watch']
+      ],
+      pnlDay:[{t:'LLY/NVO',v:34},{t:'V/MA',v:21},{t:'COST/WMT',v:28},{t:'HD/LOW',v:19},{t:'PG/CL',v:9},{t:'GOOG/META',v:-11},{t:'JPM/BAC',v:-7},{t:'KO/PEP',v:14}],
+      pnlNames:[{t:'Staples pr',v:41},{t:'Payments pr',v:33},{t:'Retail pr',v:38},{t:'Pharma pr',v:52},{t:'Tech pr',v:-18},{t:'Energy pr',v:-9},{t:'Fins pr',v:12}]
+    },
+    digital:{
+      shown:'10 of 24 shown · 24/7',
+      positions:[
+        ['BTC','Bitcoin (spot)','L','210','$21.4M','27%','−2.1%','+18.4%','1.00','med','watch'],
+        ['ETH','Ethereum (spot)','L','2,800','$10.8M','14%','−3.4%','+9.1%','1.24','med','watch'],
+        ['CLSK','CleanSpark','L','720,000','$11.1M','14%','−4.2%','−8.4%','2.90','high','stop'],
+        ['SOL','Solana (spot)','L','62,000','$9.4M','12%','−4.8%','+22.1%','1.60','high','watch'],
+        ['COIN','Coinbase','L','42,000','$9.2M','12%','−2.3%','+11.8%','2.41','high','hedge'],
+        ['MSTR','MicroStrategy','L','17,500','$6.2M','8%','−3.1%','+14.2%','3.12','high','hedge'],
+        ['tNVDA','Tokenized NVDA','L','31,000','$5.7M','7%','−2.8%','+3.2%','1.82','med','watch'],
+        ['tAAPL','Tokenized AAPL','L','24,000','$5.5M','7%','−1.9%','+1.1%','1.04','low','ok'],
+        ['HOOD','Robinhood','L','180,000','$4.1M','5%','−1.2%','+6.0%','1.88','med','watch'],
+        ['USDC','USD Coin (cash)','L','3,400,000','$3.4M','4%','0.0%','0.0%','0.00','low','ok']
+      ],
+      pnlDay:[{t:'SOL',v:61},{t:'BTC',v:38},{t:'ETH',v:22},{t:'tAAPL',v:9},{t:'USDC',v:2},{t:'HOOD',v:-14},{t:'tNVDA',v:-24},{t:'MSTR',v:-41},{t:'COIN',v:-33},{t:'CLSK',v:-58}],
+      pnlNames:[{t:'SOL',v:74},{t:'BTC',v:44},{t:'ETH',v:28},{t:'Tokenized',v:-31},{t:'Miners',v:-62},{t:'Exchanges',v:-38},{t:'Treasuries',v:11},{t:'Stable',v:3}]
+    }
+  };
+
+  function renderPositions(id){
+    const rows=document.getElementById('pos-rows'); if(!rows) return;
+    const data=(fundDetail[id]||fundDetail.alpha).positions;
+    rows.innerHTML=data.map(p=>{
+      const dayCls=p[6].startsWith('−')?'dn':(p[6].startsWith('+')?'up':'muted');
+      const mtdCls=p[7].startsWith('−')?'dn':(p[7].startsWith('+')?'up':'muted');
+      const driftCls=p[9]==='high'?'red':p[9]==='med'?'warn':'muted';
       return `<tr>
         <td>${p[0]}</td><td class="muted">${p[1]}</td>
         <td><span class="pill ${p[2]==='L'?'good':'red'}">${p[2]==='L'?'Long':'Short'}</span></td>
@@ -1981,15 +2045,17 @@ a.brand:hover{background:var(--panel)}
         <td><span class="${flagMap[p[10]]}">${p[10]}</span></td>
       </tr>`;
     }).join('');
+    const cnt=document.getElementById('pos-count');
+    if(cnt) cnt.textContent=(fundDetail[id]||fundDetail.alpha).shown;
   }
 
-  /* ---- pnl bars (dashboard) ---- */
-  function buildBars(el, data, maxH){
+  /* ---- pnl bars ---- */
+  function buildBars(el, data){
     if(!el) return;
-    const max = Math.max(...data.map(d=>Math.abs(d.v)));
-    el.innerHTML = data.map(d=>{
-      const h = Math.round(Math.abs(d.v)/max*100);
-      const pos = d.v>=0;
+    const max=Math.max(...data.map(d=>Math.abs(d.v)));
+    el.innerHTML=data.map(d=>{
+      const h=Math.round(Math.abs(d.v)/max*100);
+      const pos=d.v>=0;
       return `<div class="pnl-bar">
         ${pos?`<div class="pnl-col"></div><div class="pb-fill pos" style="height:${h}%"></div>`
              :`<div class="pb-fill neg" style="height:${h}%"></div><div class="pnl-col"></div>`}
@@ -1997,15 +2063,13 @@ a.brand:hover{background:var(--panel)}
       </div>`;
     }).join('');
   }
-  buildBars(document.getElementById('pnl-bars'), [
-    {t:'NVDA',v:82},{t:'META',v:71},{t:'UBER',v:58},{t:'ANET',v:41},{t:'AMZN',v:33},
-    {t:'MSFT',v:-24},{t:'TSLA',v:-38},{t:'COIN',v:-52},{t:'MSTR',v:-61},{t:'AAPL',v:19}
-  ]);
-  buildBars(document.getElementById('pnl-names'), [
-    {t:'NVDA',v:94},{t:'META',v:78},{t:'UBER',v:62},{t:'ANET',v:51},{t:'NFLX',v:41},
-    {t:'GOOGL',v:28},{t:'AMZN',v:22},{t:'AAPL',v:14},{t:'CRM',v:-9},{t:'PEP',v:-14},
-    {t:'TSLA',v:-29},{t:'MSFT',v:-38},{t:'COIN',v:-44},{t:'MSTR',v:-58}
-  ]);
+  function renderPnl(id){
+    const f=fundDetail[id]||fundDetail.alpha;
+    buildBars(document.getElementById('pnl-bars'), f.pnlDay);
+    buildBars(document.getElementById('pnl-names'), f.pnlNames);
+  }
+  function renderDetail(id){ renderPositions(id); renderPnl(id); }
+  renderDetail('alpha');
 
   /* ---- line chart (reusable) ---- */
   function lineChart(id, series, opts){
@@ -2500,6 +2564,7 @@ a.brand:hover{background:var(--panel)}
     const critEl=document.getElementById('hero-crit');
     if(critEl) critEl.style.color = f.crit.startsWith('0') ? 'var(--good)' : '';
     const dot=document.querySelector('.fund-dot'); if(dot) dot.style.background=f.color;
+    renderDetail(id);
     try{ localStorage.setItem('point-fund', id); }catch(e){}
     renderFundMenu();
   }
