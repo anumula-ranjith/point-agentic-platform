@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Point — Agentic Intelligence for Investment Teams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="dark">
+
+<!-- =============== APP SHELL =============== -->
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a class="brand" href="landing.html" title="Back to Point home">
+      <div class="brand-mark">
+        <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><path fill="#fff" d="M16 2C9 2 4 7 4 14c0 5 3 9 7 11v3c0 1 1 2 2 2h6c1 0 2-1 2-2v-3c4-2 7-6 7-11 0-7-5-12-12-12Zm-1 4h2v16h-2V6Z"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Point</div>
+        <div class="brand-sub">Agentic Solutions</div>
+      </div>
+    </a>
+
+    <div class="side-section">
+      <div class="side-label">Workspace</div>
+      <nav class="side-nav">
+        <a href="#dashboard" class="side-item active" data-view="dashboard"><span class="dot"></span>Dashboard</a>
+        <a href="#brief" class="side-item" data-view="brief"><span class="dot"></span>Morning Brief</a>
+        <a href="#cards" class="side-item" data-view="cards"><span class="dot"></span>Action Cards<span class="badge">7</span></a>
+        <a href="#conductor" class="side-item" data-view="conductor"><span class="dot"></span>Point Conductor</a>
+      </nav>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Portfolio Squad</div>
+      <nav class="side-nav">
+        <a href="#risk" class="side-item" data-view="risk"><span class="dot red"></span>Risk & Guideline</a>
+        <a href="#tech" class="side-item" data-view="tech"><span class="dot red"></span>Technical Signals</a>
+        <a href="#pnl" class="side-item" data-view="pnl"><span class="dot red"></span>PnL Attribution</a>
+        <a href="#ir" class="side-item" data-view="ir"><span class="dot red"></span>IR & Reporting</a>
+        <a href="#pos" class="side-item" data-view="pos"><span class="dot red"></span>Position Intel</a>
+      </nav>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Market Squad</div>
+      <nav class="side-nav">
+        <a href="#research" class="side-item" data-view="research"><span class="dot gold"></span>Research & Alpha</a>
+        <a href="#flows" class="side-item" data-view="flows"><span class="dot gold"></span>Fund Flows</a>
+        <a href="#earnings" class="side-item" data-view="earnings"><span class="dot gold"></span>Earnings & Sentiment</a>
+        <a href="#macro" class="side-item" data-view="macro"><span class="dot gold"></span>Macro & Regime</a>
+        <a href="#digital" class="side-item" data-view="digital"><span class="dot gold"></span>Digital Assets</a>
+      </nav>
+    </div>
+
+    <div class="side-section">
+      <div class="side-label">Deploy</div>
+      <nav class="side-nav">
+        <a href="#mcp" class="side-item" data-view="mcp"><span class="dot"></span>Point MCP</a>
+        <a href="#execute" class="side-item" data-view="execute"><span class="dot"></span>Point Execute</a>
+        <a href="#governance" class="side-item" data-view="governance"><span class="dot"></span>Governance</a>
+      </nav>
+    </div>
+
+    <div class="side-foot">
+      <div class="user-chip">
+        <div class="avatar">UB</div>
+        <div>
+          <div class="user-name">Umabharathi M.</div>
+          <div class="user-role">GoldenHills · CIO desk</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="crumbs">
+        <a class="crumb back-link" href="landing.html" title="Back to site">
+          <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4-4.6-4.6z"/></svg>
+          Site
+        </a>
+        <span class="sep">/</span>
+        <span class="crumb">Workspace</span>
+        <span class="sep">/</span>
+        <span class="crumb current" id="crumb-view">Dashboard</span>
+      </div>
+      <div class="top-tools">
+        <label class="search">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M10 2a8 8 0 1 1-5 14.3l-3.3 3.3-1.4-1.4 3.3-3.3A8 8 0 0 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"/></svg>
+          <input placeholder="Ask Point:  'what moved NVDA last week?'  ·  'draft a tear sheet for Alpha fund'" />
+          <span class="kbd">⌘K</span>
+        </label>
+        <button class="icon-btn" title="Notifications">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 2a6 6 0 0 0-6 6v3.3L4 15h16l-2-3.7V8a6 6 0 0 0-6-6Zm0 20a3 3 0 0 0 3-3H9a3 3 0 0 0 3 3Z"/></svg>
+          <span class="pulse"></span>
+        </button>
+        <button class="icon-btn" id="theme-btn" title="Toggle theme">
+          <svg class="ic-moon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          <svg class="ic-sun" viewBox="0 0 24 24" width="18" height="18" style="display:none"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-5v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="status-pill"><span class="live"></span>Live · All agents green</div>
+      </div>
+    </header>
+
+    <!-- ======== VIEW: DASHBOARD ======== -->
+    <section class="view active" id="view-dashboard">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Monday · October 7, 2026 · 06:12 ET</div>
+          <h1 class="h1">Good morning, Umabharathi.<br/><span class="muted">You have <b class="orange">7 action cards</b>, <b class="orange">2 critical</b>, overnight on the Alpha fund.</span></h1>
+          <div class="hero-actions">
+            <button class="btn primary">Open Morning Brief</button>
+            <button class="btn ghost">Ask Point ↗</button>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-label">AUM</div>
+            <div class="stat-val">$1.248 B</div>
+            <div class="stat-delta up">+$6.1M · 24h</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Day PnL</div>
+            <div class="stat-val up">+34 bps</div>
+            <div class="stat-delta">$ 4.24 M · vs. $2.1M bench</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Gross / Net</div>
+            <div class="stat-val">184% / 62%</div>
+            <div class="stat-delta warn">Net ↑ 3.1pts since Fri close</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">1-day VaR 99%</div>
+            <div class="stat-val">$ 14.3 M</div>
+            <div class="stat-delta">1.15% of NAV</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Critical card at top -->
+      <div class="section-row">
+        <div class="card critical clickable" data-card="AC-20261007-003">
+          <div class="card-head">
+            <span class="chip crit">CRITICAL</span>
+            <span class="chip-meta">Action Card · Risk & Guideline Agent · 2 min ago</span>
+            <span class="spacer"></span>
+            <span class="chip ghost">#AC-20261007-003</span>
+          </div>
+          <h3 class="card-title">Beta-adjusted net projected at <b>63.1%</b> vs. <b>60%</b> IMA limit at Monday's open</h3>
+          <div class="metrics">
+            <div class="metric"><div class="m-val red">71%</div><div class="m-lab">Breach probability · 1d</div></div>
+            <div class="metric"><div class="m-val good">9%</div><div class="m-lab">After recommended trades</div></div>
+            <div class="metric"><div class="m-val">6 bps</div><div class="m-lab">Estimated alpha cost</div></div>
+            <div class="metric"><div class="m-val">$ 1.42 M</div><div class="m-lab">Dollars at risk</div></div>
+          </div>
+          <div class="card-body">
+            <div><b>Drivers:</b> semis beta drift · tokenized-equity weekend move −2.8% · hot CPI risk <span class="tag">Macro Agent</span></div>
+            <div><b>Recommended:</b> Trim NVDA 12% (~$8.4M); buy SMH Nov 215/205 put spread for $0.42M premium</div>
+          </div>
+          <div class="card-foot">
+            <button class="btn primary">Approve</button>
+            <button class="btn dark">Modify in What-If</button>
+            <button class="btn ghost">Dismiss</button>
+            <span class="meta right">Signed by R&G Agent v2.3 · Audit #a3f21</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10 agent tiles -->
+      <div class="grid-head">
+        <div>
+          <div class="h-eyebrow">The Agent Team</div>
+          <h2 class="h2">Ten specialist agents · one coordinated book</h2>
+        </div>
+        <div class="legend">
+          <span><i class="sq red"></i>Portfolio Squad</span>
+          <span><i class="sq gold"></i>Market Squad</span>
+          <span><i class="sq grey"></i>Idle</span>
+        </div>
+      </div>
+
+      <div class="agent-grid">
+        <!-- Portfolio -->
+        <a href="#risk" class="agent-tile red" data-view="risk">
+          <div class="a-icon">🛡</div>
+          <div class="a-name">Risk & Guideline</div>
+          <div class="a-sub">VaR, limits, stress, drawdown</div>
+          <div class="a-meta"><span class="pill red">2 critical</span><span class="pill ghost">running</span></div>
+        </a>
+        <a href="#tech" class="agent-tile red" data-view="tech">
+          <div class="a-icon">📈</div>
+          <div class="a-name">Technical Signals</div>
+          <div class="a-sub">Stops, RSI, MACD, volume z</div>
+          <div class="a-meta"><span class="pill orange">4 warnings</span><span class="pill ghost">running</span></div>
+        </a>
+        <a href="#pnl" class="agent-tile red" data-view="pnl">
+          <div class="a-icon">⚖︎</div>
+          <div class="a-name">PnL Attribution</div>
+          <div class="a-sub">By name · sector · factor</div>
+          <div class="a-meta"><span class="pill ghost">updated 6m ago</span></div>
+        </a>
+        <a href="#ir" class="agent-tile red" data-view="ir">
+          <div class="a-icon">📝</div>
+          <div class="a-name">IR & Reporting</div>
+          <div class="a-sub">Tear sheets, LP letters, DDQ</div>
+          <div class="a-meta"><span class="pill gold">2 drafts</span></div>
+        </a>
+        <a href="#pos" class="agent-tile red" data-view="pos">
+          <div class="a-icon">📰</div>
+          <div class="a-name">Position Intelligence</div>
+          <div class="a-sub">News, catalysts, thesis drift</div>
+          <div class="a-meta"><span class="pill orange">3 thesis drift</span></div>
+        </a>
+
+        <!-- Market -->
+        <a href="#research" class="agent-tile gold" data-view="research">
+          <div class="a-icon">🔍</div>
+          <div class="a-name">Research & Alpha</div>
+          <div class="a-sub">AI + quant ranking, ranges</div>
+          <div class="a-meta"><span class="pill ghost">12 new ideas</span></div>
+        </a>
+        <a href="#flows" class="agent-tile gold" data-view="flows">
+          <div class="a-icon">≋</div>
+          <div class="a-name">Fund Flows</div>
+          <div class="a-sub">13F, 13D, N-PORT, crowding</div>
+          <div class="a-meta"><span class="pill orange">crowding ↑ semis</span></div>
+        </a>
+        <a href="#earnings" class="agent-tile gold" data-view="earnings">
+          <div class="a-icon">💬</div>
+          <div class="a-name">Earnings & Sentiment</div>
+          <div class="a-sub">Call tone, guidance, read-across</div>
+          <div class="a-meta"><span class="pill ghost">6 prints today</span></div>
+        </a>
+        <a href="#macro" class="agent-tile gold" data-view="macro">
+          <div class="a-icon">🌍</div>
+          <div class="a-name">Macro & Regime</div>
+          <div class="a-sub">Rates, CPI, FX, regime</div>
+          <div class="a-meta"><span class="pill red">CPI tomorrow</span></div>
+        </a>
+        <a href="#digital" class="agent-tile gold" data-view="digital">
+          <div class="a-icon">◉</div>
+          <div class="a-name">Digital Assets</div>
+          <div class="a-sub">Crypto · tokenized equities</div>
+          <div class="a-meta"><span class="pill gold">24/7 · basis −18 bps</span></div>
+        </a>
+      </div>
+
+      <!-- Three-up panels -->
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">PnL Attribution · Day</h3><span class="chip ghost">YTD +18.4%</span></div>
+          <div class="pnl-bars" id="pnl-bars"></div>
+          <div class="legend-inline">
+            <span><i class="sq good"></i>Winners</span>
+            <span><i class="sq bad"></i>Losers</span>
+            <span class="right muted">Hit rate 62% · W/L 1.84</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Exposure · Beta-adjusted</h3><span class="chip warn">Net 62% · lim 60</span></div>
+          <div class="exposure">
+            <div class="bar-row"><span class="bar-lab">Gross</span><div class="bar"><div class="fill" style="width:92%"></div></div><span class="bar-val">184%</span></div>
+            <div class="bar-row"><span class="bar-lab">Net β</span><div class="bar"><div class="fill warn" style="width:62%"></div></div><span class="bar-val warn">62%</span></div>
+            <div class="bar-row"><span class="bar-lab">Top 10</span><div class="bar"><div class="fill" style="width:38%"></div></div><span class="bar-val">38%</span></div>
+            <div class="bar-row"><span class="bar-lab">Semis</span><div class="bar"><div class="fill" style="width:28%"></div></div><span class="bar-val">28%</span></div>
+            <div class="bar-row"><span class="bar-lab">Software</span><div class="bar"><div class="fill" style="width:22%"></div></div><span class="bar-val">22%</span></div>
+            <div class="bar-row"><span class="bar-lab">Energy</span><div class="bar"><div class="fill" style="width:9%"></div></div><span class="bar-val">9%</span></div>
+            <div class="bar-row"><span class="bar-lab">Crypto β</span><div class="bar"><div class="fill gold" style="width:17%"></div></div><span class="bar-val">17%</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Macro Regime</h3><span class="chip gold">Late cycle · tightening</span></div>
+          <div class="regime">
+            <div class="regime-grid">
+              <div class="rg-cell on">Late cycle</div>
+              <div class="rg-cell">Early</div>
+              <div class="rg-cell">Mid</div>
+              <div class="rg-cell">Recession</div>
+            </div>
+            <div class="kv"><span>CPI YoY</span><b>3.1%</b></div>
+            <div class="kv"><span>Fed funds</span><b>4.75%</b></div>
+            <div class="kv"><span>10Y UST</span><b>4.38% <span class="up">+6bp</span></b></div>
+            <div class="kv"><span>DXY</span><b>101.6 <span class="dn">−0.3</span></b></div>
+            <div class="kv"><span>WTI</span><b>$ 78.2 <span class="up">+1.1</span></b></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action feed + Digital assets strip -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Live Action Feed</h3><span class="chip ghost">Point Conductor · ranked by $ at risk</span></div>
+          <ul class="feed">
+            <li class="f-row clickable" data-card="AC-20261007-003">
+              <span class="pill red">CRIT</span>
+              <div>
+                <div class="f-title">Beta-net 63.1% vs 60% IMA limit at open</div>
+                <div class="f-sub">Risk & Guideline · trim NVDA 12% + SMH put spread · $1.42M at risk</div>
+              </div>
+              <span class="f-time">2m</span>
+            </li>
+            <li class="f-row clickable" data-card="AC-20261007-004">
+              <span class="pill red">CRIT</span>
+              <div>
+                <div class="f-title">CPI print tomorrow 08:30 ET · hot-print scenario = −38 bps NAV</div>
+                <div class="f-sub">Macro & Regime · hedge ladder suggested · 10Y +12bp intraday risk</div>
+              </div>
+              <span class="f-time">14m</span>
+            </li>
+            <li class="f-row clickable" data-card="AC-20261007-006">
+              <span class="pill orange">WARN</span>
+              <div>
+                <div class="f-title">META crowding score 92 — top-decile hedge-fund ownership</div>
+                <div class="f-sub">Fund Flows · de-grossing risk if VIX &gt; 22 · consider halving</div>
+              </div>
+              <span class="f-time">26m</span>
+            </li>
+            <li class="f-row clickable" data-card="AC-20261007-009">
+              <span class="pill orange">WARN</span>
+              <div>
+                <div class="f-title">TSLA stop proximity 0.3 ATR · RSI divergence 5d</div>
+                <div class="f-sub">Technical Signals · $422M position · trail stop 243.10</div>
+              </div>
+              <span class="f-time">41m</span>
+            </li>
+            <li class="f-row clickable" data-card="AC-20261007-014">
+              <span class="pill gold">IDEA</span>
+              <div>
+                <div class="f-title">NEW IPO · Lumen Robotics (LMRX) initiates coverage Thu</div>
+                <div class="f-sub">Research & Alpha · ranked #4 of 38 new issues · 5d range $19.4–23.8</div>
+              </div>
+              <span class="f-time">1h</span>
+            </li>
+            <li class="f-row clickable" data-card="AC-20261007-002">
+              <span class="pill gold">IDEA</span>
+              <div>
+                <div class="f-title">BTC funding +0.082% · OI +18% · crowded longs</div>
+                <div class="f-sub">Digital Assets · COIN/MSTR put-spread queued · size $0.6M premium</div>
+              </div>
+              <span class="f-time">Sat 2:14a</span>
+            </li>
+            <li class="f-row">
+              <span class="pill ghost">INFO</span>
+              <div>
+                <div class="f-title">IR draft ready · October LP letter · 3 citations pending</div>
+                <div class="f-sub">IR & Reporting · marketing-rule pre-check: 2 soft flags</div>
+              </div>
+              <span class="f-time">2h</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card dark-card">
+          <div class="card-head"><h3 class="card-title white">24/7 Market · tokenized basis</h3><span class="chip gold">Point Digital Assets</span></div>
+          <svg viewBox="0 0 500 220" class="chart" id="tok-chart" aria-hidden="true"></svg>
+          <div class="legend-inline white">
+            <span><i class="sq ltline"></i>Primary listing (Fri close)</span>
+            <span><i class="sq gold"></i>Tokenized (24/7)</span>
+            <span class="right">Basis vs. NYSE: <b class="orange">−1.82%</b></span>
+          </div>
+          <div class="mini-grid">
+            <div><div class="mg-lab">tAAPL · Ondo</div><div class="mg-val">231.42 <span class="dn">−1.9%</span></div></div>
+            <div><div class="mg-lab">tNVDA · xStocks</div><div class="mg-val">184.10 <span class="dn">−2.8%</span></div></div>
+            <div><div class="mg-lab">tTSLA · bStocks</div><div class="mg-val">246.75 <span class="up">+0.4%</span></div></div>
+            <div><div class="mg-lab">tSPY · Securitize</div><div class="mg-val">582.90 <span class="dn">−0.6%</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Positions table preview -->
+      <div class="card">
+        <div class="card-head">
+          <h3 class="card-title">Top positions</h3>
+          <span class="chip ghost">38 of 142 shown</span>
+          <span class="spacer"></span>
+          <div class="seg">
+            <button class="seg-btn active">All</button>
+            <button class="seg-btn">Long</button>
+            <button class="seg-btn">Short</button>
+            <button class="seg-btn">Options</button>
+            <button class="seg-btn">Crypto</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Ticker</th><th>Name</th><th>Side</th><th>Qty</th><th>Mkt Val</th><th>Weight</th><th>Day</th><th>MTD</th><th>Beta</th><th>Thesis drift</th><th>Agent flag</th>
+              </tr>
+            </thead>
+            <tbody id="pos-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: MORNING BRIEF ======== -->
+    <section class="view" id="view-brief">
+      <div class="brief-head">
+        <div>
+          <div class="eyebrow">Morning Brief · Monday, Oct 7, 2026 · composed by Point Conductor at 05:58 ET</div>
+          <h1 class="h1">Overnight: tokenized semis gapped down. CPI tomorrow. <span class="orange">Trim semis before open.</span></h1>
+        </div>
+        <div class="brief-actions">
+          <button class="btn ghost">Export PDF</button>
+          <button class="btn ghost">Send to Teams</button>
+          <button class="btn primary">Approve all 2 critical</button>
+        </div>
+      </div>
+
+      <div class="brief-wrap">
+        <article class="brief-main">
+          <h3 class="h3">What changed overnight</h3>
+          <p>Tokenized NVDA, AMD and SMH traded <b>−2.3% to −2.9%</b> on weekend venues (xStocks, Ondo). Options skew on SMH is now the steepest in 60 days. BTC funding spiked to +0.082%, open interest +18%, consistent with crowded longs — COIN and MSTR exposure at risk Monday.</p>
+
+          <h3 class="h3">Agent findings</h3>
+          <ul class="brief-list">
+            <li><span class="tag red">Risk</span> Beta-net projected <b>63.1%</b> at open vs. IMA cap 60%. Trim <b>NVDA 12%</b> + <b>SMH Nov 215/205 put spread</b>.</li>
+            <li><span class="tag red">Macro</span> CPI tomorrow 08:30 ET. Hot-print scenario (+0.4% MoM core) = <b>−38 bps</b> NAV. Suggest ladder: 10Y DV01 hedge 0.6× book.</li>
+            <li><span class="tag gold">Flows</span> META crowding score <b>92</b> (top decile). HF ownership +7pts QoQ. De-grossing risk if VIX breaks 22.</li>
+            <li><span class="tag gold">Earnings</span> JPM reports Thu — supplier read-across for V, MA. Tone model suggests cautious guidance (confidence 71%).</li>
+            <li><span class="tag gold">Digital</span> Tokenized AAPL basis −1.9%; arb desk could add; depth thin on Securitize.</li>
+            <li><span class="tag red">PnL</span> MSFT contributing <b>−24 bps</b> MTD · alpha half-life expired, flagged for trim.</li>
+            <li><span class="tag red">Pos Intel</span> NVDA thesis drift <b>↑</b>: insider sales $220M + activist 13D (Elliot).</li>
+          </ul>
+
+          <h3 class="h3">The three decisions for today</h3>
+          <ol class="brief-ol">
+            <li>Approve the <b>Risk & Guideline</b> card trimming NVDA 12%. Alpha cost 6bps, headroom restored, IMA clean.</li>
+            <li>Layer CPI hedge via <b>Macro agent</b> ladder. Pre-trade what-if shows &lt;2bps carry.</li>
+            <li>Halve <b>META</b> or buy OTM Dec put spread to pre-empt de-grossing.</li>
+          </ol>
+        </article>
+
+        <aside class="brief-side">
+          <div class="side-card">
+            <div class="sc-lab">Overnight PnL (est.)</div>
+            <div class="sc-val dn">−$ 2.14 M</div>
+            <div class="sc-sub">tokenized semis + BTC drag</div>
+          </div>
+          <div class="side-card">
+            <div class="sc-lab">Headroom to limits</div>
+            <div class="sc-val warn">0.4 pts</div>
+            <div class="sc-sub">Beta-net vs. IMA 60%</div>
+          </div>
+          <div class="side-card">
+            <div class="sc-lab">Today's calendar</div>
+            <ul class="cal">
+              <li><b>08:30</b> Chicago Fed index</li>
+              <li><b>10:00</b> Consumer credit</li>
+              <li><b>13:00</b> 3Y auction</li>
+              <li><b>16:30</b> COIN Q3 pre-announce</li>
+              <li><b>Tue 08:30</b> <span class="red">CPI</span></li>
+            </ul>
+          </div>
+          <div class="side-card dark">
+            <div class="sc-lab white">Ask Point</div>
+            <div class="chat">
+              <div class="cb user">What's my worst-case NAV if CPI prints 0.5% MoM core?</div>
+              <div class="cb bot"><b>−72 bps</b> NAV under the hot-print scenario; drivers: 10Y +18bp, semis −3.4%, growth multiple compression. Macro agent has a hedge ladder queued (cost 1.8bps). <a>Open what-if →</a></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: ACTION CARDS ======== -->
+    <section class="view" id="view-cards">
+      <div class="view-head">
+        <div>
+          <div class="eyebrow">Action Cards · ranked by $ at risk</div>
+          <h1 class="h2">Decide. Don't just read.</h1>
+        </div>
+        <div class="filters">
+          <button class="chip-btn active">All <span>14</span></button>
+          <button class="chip-btn">Critical <span class="red">2</span></button>
+          <button class="chip-btn">Warning <span class="orange">5</span></button>
+          <button class="chip-btn">Ideas <span class="gold">7</span></button>
+        </div>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <!-- ======== VIEW: CONDUCTOR ======== -->
+    <section class="view" id="view-conductor">
+      <div class="view-head">
+        <div>
+          <div class="eyebrow">Point Conductor · event bus</div>
+          <h1 class="h2">Ten agents sharing one view of the book.</h1>
+        </div>
+        <div class="chip gold">24/7 · running on Portfolio Knowledge Graph</div>
+      </div>
+
+      <div class="conductor">
+        <div class="conductor-flow">
+          <div class="flow-col">
+            <div class="flow-head">Signals in</div>
+            <div class="flow-pill">Positions · PB · OMS/PMS</div>
+            <div class="flow-pill">Market data & options</div>
+            <div class="flow-pill">Filings & transcripts</div>
+            <div class="flow-pill">News & social</div>
+            <div class="flow-pill">Macro & rates</div>
+            <div class="flow-pill">Crypto & tokenized</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-col agents-col">
+            <div class="flow-head">Ten agents in parallel</div>
+            <div class="pair">
+              <div class="ag red"><i>🛡</i> Risk & Guideline</div>
+              <div class="ag gold"><i>🔍</i> Research & Alpha</div>
+            </div>
+            <div class="pair">
+              <div class="ag red"><i>📈</i> Technical Signals</div>
+              <div class="ag gold"><i>≋</i> Fund Flows</div>
+            </div>
+            <div class="pair">
+              <div class="ag red"><i>⚖︎</i> PnL Attribution</div>
+              <div class="ag gold"><i>💬</i> Earnings & Sentiment</div>
+            </div>
+            <div class="pair">
+              <div class="ag red"><i>📝</i> IR & Reporting</div>
+              <div class="ag gold"><i>🌍</i> Macro & Regime</div>
+            </div>
+            <div class="pair">
+              <div class="ag red"><i>📰</i> Position Intel</div>
+              <div class="ag gold"><i>◉</i> Digital Assets</div>
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-col">
+            <div class="flow-head">Point Conductor</div>
+            <div class="conductor-box">
+              <div class="cb-brain">⌾</div>
+              <ul>
+                <li>Fans work out in parallel</li>
+                <li>Triggers follow-ups across agents</li>
+                <li>Resolves conflicting views</li>
+                <li>Ranks by $ at risk</li>
+                <li>Composes Action Cards & briefs</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Event bus · last 60s</h3><span class="chip ghost">live</span></div>
+          <ul class="eventlog" id="eventlog"></ul>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Agent handoffs today</h3><span class="chip ghost">cross-agent triggers</span></div>
+          <div class="matrix">
+            <div class="mx-head"><span></span><span>Risk</span><span>Tech</span><span>PnL</span><span>Pos</span><span>Macro</span><span>Flows</span></div>
+            <div class="mx-row"><span class="mx-lab">Macro</span><span class="c on">8</span><span class="c">1</span><span class="c on">4</span><span class="c">2</span><span class="c self">—</span><span class="c on">3</span></div>
+            <div class="mx-row"><span class="mx-lab">Flows</span><span class="c on">5</span><span class="c">0</span><span class="c">2</span><span class="c on">3</span><span class="c">1</span><span class="c self">—</span></div>
+            <div class="mx-row"><span class="mx-lab">Digital</span><span class="c on">6</span><span class="c">0</span><span class="c">1</span><span class="c">0</span><span class="c">1</span><span class="c">0</span></div>
+            <div class="mx-row"><span class="mx-lab">Earnings</span><span class="c">1</span><span class="c">2</span><span class="c on">7</span><span class="c on">5</span><span class="c">0</span><span class="c">2</span></div>
+            <div class="mx-row"><span class="mx-lab">Pos Intel</span><span class="c on">4</span><span class="c">3</span><span class="c">1</span><span class="c self">—</span><span class="c">0</span><span class="c">2</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: RISK ======== -->
+    <section class="view" id="view-risk">
+      <div class="view-head">
+        <div><div class="eyebrow">Portfolio squad · Agent</div><h1 class="h2">🛡  Risk & Guideline Agent</h1></div>
+        <div class="status-pill"><span class="live red"></span>2 critical · 71% breach prob</div>
+      </div>
+
+      <div class="grid-4">
+        <div class="kpi"><div class="k-lab">VaR 99% · 1d</div><div class="k-val">$ 14.3 M</div><div class="k-sub">1.15% of NAV</div></div>
+        <div class="kpi"><div class="k-lab">CVaR 99%</div><div class="k-val">$ 21.8 M</div><div class="k-sub">worst 1% tail</div></div>
+        <div class="kpi"><div class="k-lab">Max drawdown YTD</div><div class="k-val">−4.6%</div><div class="k-sub">Jun 12</div></div>
+        <div class="kpi"><div class="k-lab">Days to liquidate</div><div class="k-val">2.4</div><div class="k-sub">90% at 20% ADV</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">IMA & limit panel</h3><span class="chip red">1 projected breach</span></div>
+          <table class="tbl">
+            <thead><tr><th>Rule</th><th>Current</th><th>Limit</th><th>Headroom</th><th>Breach prob · 1d / 3d / 5d</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Beta-adj net exposure</td><td class="warn">62.1%</td><td>60%</td><td class="warn">−2.1 pts</td><td><b class="red">71%</b> / 78% / 82%</td><td><span class="pill red">BREACH 1d</span></td></tr>
+              <tr><td>Gross exposure</td><td>184%</td><td>220%</td><td>36 pts</td><td>3% / 6% / 9%</td><td><span class="pill good">OK</span></td></tr>
+              <tr><td>Single-name max</td><td>8.2% (NVDA)</td><td>10%</td><td>1.8 pts</td><td>12% / 18% / 22%</td><td><span class="pill ok">watch</span></td></tr>
+              <tr><td>Top-10 concentration</td><td>38%</td><td>45%</td><td>7 pts</td><td>1% / 2% / 4%</td><td><span class="pill good">OK</span></td></tr>
+              <tr><td>Sector cap · Semis</td><td>28%</td><td>30%</td><td>2 pts</td><td>22% / 31% / 38%</td><td><span class="pill ok">watch</span></td></tr>
+              <tr><td>VaR vs. NAV</td><td>1.15%</td><td>1.75%</td><td>60 bp</td><td>1% / 3% / 5%</td><td><span class="pill good">OK</span></td></tr>
+              <tr><td>Crypto β exposure</td><td>17%</td><td>20%</td><td>3 pts</td><td>14% / 19% / 24%</td><td><span class="pill ok">watch</span></td></tr>
+              <tr><td>Short borrow fee avg</td><td>142 bp</td><td>250 bp</td><td>108 bp</td><td>0% / 1% / 2%</td><td><span class="pill good">OK</span></td></tr>
+              <tr><td>Days-to-liquidate</td><td>2.4</td><td>5.0</td><td>2.6d</td><td>0% / 1% / 2%</td><td><span class="pill good">OK</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Pre-trade what-if</h3><span class="chip ghost">headroom simulator</span></div>
+          <div class="whatif">
+            <div class="wi-row">
+              <div class="wi-lab">Scenario</div>
+              <select><option>Trim NVDA 12% + SMH Nov 215/205 put spread</option><option>Halve META + SPY hedge</option><option>Hot CPI (+0.4% MoM core)</option></select>
+            </div>
+            <div class="wi-grid">
+              <div class="wi-cell"><div class="wi-k">Beta-net</div><div class="wi-v">62.1% → <b class="good">55.4%</b></div></div>
+              <div class="wi-cell"><div class="wi-k">Gross</div><div class="wi-v">184% → 172%</div></div>
+              <div class="wi-cell"><div class="wi-k">VaR 99%</div><div class="wi-v">$14.3M → $11.1M</div></div>
+              <div class="wi-cell"><div class="wi-k">Alpha cost</div><div class="wi-v">6 bps</div></div>
+              <div class="wi-cell"><div class="wi-k">Carry cost</div><div class="wi-v">0.4 bps/mo</div></div>
+              <div class="wi-cell"><div class="wi-k">Breach prob 1d</div><div class="wi-v"><b class="good">9%</b></div></div>
+            </div>
+            <div class="wi-foot">
+              <button class="btn primary">Send to OMS</button>
+              <button class="btn ghost">Save scenario</button>
+              <button class="btn dark">Export audit</button>
+            </div>
+          </div>
+          <div class="stress">
+            <div class="st-head">Stress tests</div>
+            <div class="st-row"><span>−5% equities · +50bp 10Y</span><b class="dn">−$ 23.4 M</b></div>
+            <div class="st-row"><span>Semis −8%</span><b class="dn">−$ 11.6 M</b></div>
+            <div class="st-row"><span>BTC −15% + funding spike</span><b class="dn">−$ 6.1 M</b></div>
+            <div class="st-row"><span>USD +3% DXY</span><b class="dn">−$ 2.9 M</b></div>
+            <div class="st-row"><span>Vol regime (VIX &gt;30)</span><b class="dn">−$ 18.0 M</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: TECH ======== -->
+    <section class="view" id="view-tech">
+      <div class="view-head">
+        <div><div class="eyebrow">Portfolio squad · Agent</div><h1 class="h2">📈  Technical Signals Agent</h1></div>
+        <div class="chip orange">4 warnings · 1 critical</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Signal matrix</h3>
+          <div class="seg">
+            <button class="seg-btn active">All</button><button class="seg-btn">Stops</button><button class="seg-btn">RSI/MACD</button><button class="seg-btn">Volume</button><button class="seg-btn">Earnings move</button>
+          </div>
+        </div>
+        <table class="tbl">
+          <thead><tr><th>Ticker</th><th>Price</th><th>50/200 DMA</th><th>RSI(14)</th><th>MACD</th><th>Vol z-score</th><th>ATR stop</th><th>Short-squeeze</th><th>Signal</th></tr></thead>
+          <tbody>
+            <tr><td>NVDA</td><td>184.10</td><td>↑ above both</td><td>72</td><td>bear div</td><td>+2.1σ</td><td>175.4 (−5%)</td><td>low</td><td><span class="pill red">CRIT · trim</span></td></tr>
+            <tr><td>TSLA</td><td>245.60</td><td>flat</td><td>58</td><td>rolling over</td><td>+0.8σ</td><td>243.1 (−1%)</td><td>mid</td><td><span class="pill orange">WARN · stop near</span></td></tr>
+            <tr><td>META</td><td>592.44</td><td>↑ above both</td><td>66</td><td>pos</td><td>+1.4σ</td><td>561.0</td><td>low</td><td><span class="pill orange">WARN · crowded</span></td></tr>
+            <tr><td>AAPL</td><td>234.00</td><td>↑</td><td>54</td><td>neutral</td><td>−0.2σ</td><td>222.5</td><td>low</td><td><span class="pill good">OK</span></td></tr>
+            <tr><td>MSFT</td><td>412.90</td><td>↑ fading</td><td>49</td><td>bear cross</td><td>−1.1σ</td><td>398.0</td><td>low</td><td><span class="pill orange">WARN · trim</span></td></tr>
+            <tr><td>AMD</td><td>168.30</td><td>↓ 50&lt;200</td><td>44</td><td>neg</td><td>+1.8σ</td><td>161.0</td><td>low</td><td><span class="pill orange">WARN</span></td></tr>
+            <tr><td>COIN</td><td>218.70</td><td>↑</td><td>63</td><td>pos</td><td>+2.4σ</td><td>204.0</td><td>mid</td><td><span class="pill gold">signal · BTC β</span></td></tr>
+            <tr><td>MSTR</td><td>352.10</td><td>↑</td><td>71</td><td>bear div</td><td>+2.9σ</td><td>330.0</td><td>mid</td><td><span class="pill orange">WARN</span></td></tr>
+            <tr><td>GOOGL</td><td>168.80</td><td>↑</td><td>51</td><td>neutral</td><td>−0.4σ</td><td>161.0</td><td>low</td><td><span class="pill good">OK</span></td></tr>
+            <tr><td>AMZN</td><td>201.40</td><td>↑</td><td>57</td><td>pos</td><td>+0.6σ</td><td>192.0</td><td>low</td><td><span class="pill good">OK</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: PNL ======== -->
+    <section class="view" id="view-pnl">
+      <div class="view-head">
+        <div><div class="eyebrow">Portfolio squad · Agent</div><h1 class="h2">⚖︎  PnL Attribution Agent</h1></div>
+        <div class="chip">YTD +18.4% · bench +9.7%</div>
+      </div>
+      <div class="grid-4">
+        <div class="kpi"><div class="k-lab">Day</div><div class="k-val up">+34 bps</div><div class="k-sub">$ 4.24 M</div></div>
+        <div class="kpi"><div class="k-lab">MTD</div><div class="k-val up">+1.82%</div><div class="k-sub">$ 22.7 M</div></div>
+        <div class="kpi"><div class="k-lab">QTD</div><div class="k-val up">+4.9%</div><div class="k-sub">$ 61.1 M</div></div>
+        <div class="kpi"><div class="k-lab">YTD</div><div class="k-val up">+18.4%</div><div class="k-sub">$ 229.6 M</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Attribution · by name (MTD)</h3></div>
+          <div class="pnl-bars big" id="pnl-names"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Factor vs. stock-specific</h3></div>
+          <div class="donut">
+            <svg viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="60" fill="none" stroke="#2c2621" stroke-width="22"/>
+              <circle cx="80" cy="80" r="60" fill="none" stroke="#E85D3B" stroke-width="22" stroke-dasharray="226 377" transform="rotate(-90 80 80)"/>
+              <circle cx="80" cy="80" r="60" fill="none" stroke="#D4A42B" stroke-width="22" stroke-dasharray="90 377" stroke-dashoffset="-226" transform="rotate(-90 80 80)"/>
+            </svg>
+            <div class="donut-legend">
+              <div><i class="sq orange"></i>Stock-specific <b>60%</b></div>
+              <div><i class="sq gold"></i>Factor <b>24%</b></div>
+              <div><i class="sq grey"></i>Residual <b>16%</b></div>
+            </div>
+          </div>
+          <div class="kv-row">
+            <div><div class="kv-k">Hit rate</div><div class="kv-v">62%</div></div>
+            <div><div class="kv-k">W/L ratio</div><div class="kv-v">1.84</div></div>
+            <div><div class="kv-k">Alpha half-life</div><div class="kv-v">14d</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Trim & exit candidates · alpha decayed / risk-budget heavy</h3><span class="chip ghost">suggested by agent</span></div>
+        <table class="tbl">
+          <thead><tr><th>Ticker</th><th>Thesis age</th><th>Alpha half-life</th><th>MTD PnL</th><th>Risk budget used</th><th>Catalyst</th><th>Suggestion</th></tr></thead>
+          <tbody>
+            <tr><td>MSFT</td><td>284d</td><td>14d · <b class="red">expired</b></td><td class="dn">−24 bp</td><td>18%</td><td>none in 20d</td><td><span class="pill orange">Trim 25%</span></td></tr>
+            <tr><td>CRM</td><td>161d</td><td>22d</td><td class="dn">−9 bp</td><td>11%</td><td>Dreamforce +9d</td><td><span class="pill ghost">Hold · catalyst near</span></td></tr>
+            <tr><td>NFLX</td><td>98d</td><td>18d</td><td class="up">+41 bp</td><td>8%</td><td>Earnings +12d</td><td><span class="pill good">Hold</span></td></tr>
+            <tr><td>PEP (short)</td><td>72d</td><td>30d</td><td class="dn">−6 bp</td><td>5%</td><td>Earnings +3d</td><td><span class="pill orange">Cover 50%</span></td></tr>
+            <tr><td>SNOW</td><td>44d</td><td>26d</td><td class="up">+17 bp</td><td>14%</td><td>Investor day +18d</td><td><span class="pill good">Hold</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: IR ======== -->
+    <section class="view" id="view-ir">
+      <div class="view-head">
+        <div><div class="eyebrow">Portfolio squad · Agent</div><h1 class="h2">📝  IR & Reporting Agent</h1></div>
+        <div class="chip gold">2 drafts · SEC Mkt Rule pre-check</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">LP Letter · October 2026 · draft</h3><span class="chip ghost">v3 · 92% ready</span></div>
+          <div class="doc">
+            <p><b>Dear Partner,</b></p>
+            <p>October brought a two-sided tape. We delivered a <b>+1.82% net return</b> for the month and <b>+18.4% YTD</b>, meaningfully ahead of the benchmark's <b>+9.7%</b>. Attribution was dominated by stock-specific wins in Communications and Semiconductors, partially offset by a drag from large-cap software where our Microsoft thesis has entered a resting phase.</p>
+            <p>We used the period to tighten net exposure after the agent team flagged <b>beta-adjusted net drifting toward the IMA cap</b>; a defined-risk hedge on the semi-complex preserves the long thesis while restoring headroom. On <b>digital assets</b>, we continue to run the 24/7 monitor on tokenized US equities and crypto derivatives — our edge is being awake before the opening bell on Monday…</p>
+            <p class="muted">[auto-generated · 2 citations pending · 4 compliance soft-flags resolved]</p>
+          </div>
+          <div class="card-foot">
+            <button class="btn primary">Send to compliance</button>
+            <button class="btn ghost">Edit</button>
+            <button class="btn dark">Export .docx</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">DDQ Library · recent</h3><span class="chip ghost">142 Q&A · 3 updated</span></div>
+          <ul class="ddq">
+            <li><div class="ddq-q">How do you manage single-name concentration?</div><div class="ddq-a">10% hard cap enforced by Risk Agent · pre-trade what-if required · daily audit…</div></li>
+            <li><div class="ddq-q">What is your exposure to tokenized assets?</div><div class="ddq-a">Monitoring only — &lt;2% NAV in tokenized ETFs via custodied wrappers. 24/7 basis…</div></li>
+            <li><div class="ddq-q">Describe your AI governance.</div><div class="ddq-a">All agent outputs are advisory; no autonomous trading on Platform tier. Full audit trail…</div></li>
+            <li><div class="ddq-q">How is model risk managed?</div><div class="ddq-a">Deterministic Quant engine primary; LLM calls are explainable, logged, and never…</div></li>
+            <li><div class="ddq-q">Business continuity for 24/7 markets?</div><div class="ddq-a">Dual-region active-active; on-call rotation covers weekends; auto-flatten on breach…</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Tear sheets · recent</h3></div>
+        <div class="tiles">
+          <div class="tile"><div class="t-h">Alpha Fund LP · Sep 2026</div><div class="t-sub">Monthly · 12 pages</div><div class="t-foot">Sent · 142 LPs</div></div>
+          <div class="tile"><div class="t-h">Alpha Fund LP · Oct 2026 (draft)</div><div class="t-sub">Monthly · 11 pages</div><div class="t-foot"><span class="pill gold">in review</span></div></div>
+          <div class="tile"><div class="t-h">Risk transparency Q3</div><div class="t-sub">Quarterly · 24 pages</div><div class="t-foot">Scheduled Oct 15</div></div>
+          <div class="tile"><div class="t-h">Prospect DDQ · Castle Peak</div><div class="t-sub">On-demand · 68 Q</div><div class="t-foot"><span class="pill good">approved</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: POSITION INTEL ======== -->
+    <section class="view" id="view-pos">
+      <div class="view-head">
+        <div><div class="eyebrow">Portfolio squad · Agent</div><h1 class="h2">📰  Position Intelligence Agent</h1></div>
+        <div class="chip orange">3 thesis-drift alerts</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Catalyst calendar · next 10 days</h3></div>
+          <ul class="cal big">
+            <li><b>Tue Oct 8</b><span>CPI 08:30 · <span class="red">macro</span></span></li>
+            <li><b>Wed Oct 9</b><span>JPM Q3 earnings pre-mkt</span></li>
+            <li><b>Thu Oct 10</b><span>Lumen Robotics (LMRX) coverage initiations</span></li>
+            <li><b>Thu Oct 10</b><span>Fed minutes 14:00</span></li>
+            <li><b>Fri Oct 11</b><span>UNH Q3 · PPI 08:30</span></li>
+            <li><b>Mon Oct 14</b><span>WFC + C earnings</span></li>
+            <li><b>Tue Oct 15</b><span>UNH investor day</span></li>
+            <li><b>Wed Oct 16</b><span>NVDA GTC keynote</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">News & sentiment · last 24h</h3></div>
+          <ul class="news">
+            <li><span class="t">05:12</span><span class="src">Bloomberg</span><div><b>Nvidia</b> insider sales total $220M over 10 trading days</div><span class="pill red">neg</span></li>
+            <li><span class="t">04:48</span><span class="src">Reuters</span><div><b>Meta</b> secures EU AI compliance ruling</div><span class="pill good">pos</span></li>
+            <li><span class="t">03:21</span><span class="src">13D filing</span><div><b>Elliott</b> discloses 1.9% in NVDA, pushing capital return</div><span class="pill orange">watch</span></li>
+            <li><span class="t">22:40</span><span class="src">Semafor</span><div>Semi tariffs: Treasury draft eases carve-outs for TSMC</div><span class="pill good">pos</span></li>
+            <li><span class="t">20:11</span><span class="src">8-K</span><div><b>SNOW</b> announces CFO transition, reaffirms guide</div><span class="pill ghost">neutral</span></li>
+            <li><span class="t">18:04</span><span class="src">X · verified</span><div>Treasury Sec hints at slower QT tapering</div><span class="pill good">pos</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Thesis-drift monitor</h3><span class="chip ghost">vs. analyst original thesis</span></div>
+        <table class="tbl">
+          <thead><tr><th>Ticker</th><th>Analyst</th><th>Thesis age</th><th>Original drivers</th><th>Current reality</th><th>Drift</th><th>Flag</th></tr></thead>
+          <tbody>
+            <tr><td>NVDA</td><td>P. Shah</td><td>284d</td><td>Hyperscaler capex ↑, DGX cycle</td><td>Insider sales + 13D + skew spike</td><td><b class="orange">medium</b></td><td><span class="pill orange">reassess</span></td></tr>
+            <tr><td>MSFT</td><td>K. Lee</td><td>420d</td><td>Copilot adoption, Azure growth</td><td>Azure decel 2Q, Copilot pricing cut</td><td><b class="red">high</b></td><td><span class="pill red">trim</span></td></tr>
+            <tr><td>CRM</td><td>P. Shah</td><td>161d</td><td>Margin story, AI Cloud</td><td>Dreamforce near · tone cautious</td><td><b class="good">low</b></td><td><span class="pill good">hold</span></td></tr>
+            <tr><td>UNH</td><td>M. O'Brien</td><td>88d</td><td>Medical loss ratio recovery</td><td>MLR flat; investor day +8d</td><td><b class="orange">medium</b></td><td><span class="pill orange">watch</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: RESEARCH ======== -->
+    <section class="view" id="view-research">
+      <div class="view-head">
+        <div><div class="eyebrow">Market squad · Agent</div><h1 class="h2">🔍  Research & Alpha Agent</h1></div>
+        <div class="chip gold">AI + quant · 12 new ideas today</div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Ranked universe · S&P 500 + Russell 2000 + IPOs</h3>
+          <div class="seg">
+            <button class="seg-btn active">All</button><button class="seg-btn">Long ideas</button><button class="seg-btn">Short ideas</button><button class="seg-btn">IPO/lock-ups</button>
+          </div>
+        </div>
+        <table class="tbl">
+          <thead><tr><th>Rank</th><th>Ticker</th><th>Score</th><th>Quality</th><th>Momentum</th><th>Revisions</th><th>Sentiment</th><th>1d range</th><th>5d range</th><th>Thesis fit</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>UBER</td><td class="good">0.89</td><td>84</td><td>↑↑</td><td>+2</td><td>pos</td><td>82.4–85.1</td><td>80.0–89.2</td><td>strong</td></tr>
+            <tr><td>2</td><td>SPOT</td><td class="good">0.86</td><td>72</td><td>↑</td><td>+1</td><td>pos</td><td>441–452</td><td>432–466</td><td>fit</td></tr>
+            <tr><td>3</td><td>ANET</td><td class="good">0.82</td><td>88</td><td>↑</td><td>+3</td><td>pos</td><td>412–421</td><td>402–432</td><td>fit</td></tr>
+            <tr><td>4</td><td>LMRX (IPO)</td><td>0.80</td><td>n/a</td><td>new</td><td>init +3</td><td>pos</td><td>19.4–21.0</td><td>19.4–23.8</td><td>strong</td></tr>
+            <tr><td>5</td><td>CLSK</td><td>0.78</td><td>61</td><td>↑↑</td><td>+1</td><td>pos</td><td>15.1–15.9</td><td>14.6–17.2</td><td>fit · crypto β</td></tr>
+            <tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+            <tr><td>496</td><td>WBA</td><td class="bad">0.14</td><td>42</td><td>↓↓</td><td>−4</td><td>neg</td><td>8.1–8.4</td><td>7.8–8.7</td><td>short</td></tr>
+            <tr><td>497</td><td>HOG</td><td class="bad">0.13</td><td>44</td><td>↓</td><td>−3</td><td>neg</td><td>22.1–23.0</td><td>21.4–23.8</td><td>short</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">AI explanation · UBER (long)</h3><span class="chip ghost">explainable</span></div>
+        <div class="explain">
+          <div class="ex-row"><div class="ex-k">Quality</div><div class="ex-bar"><div class="ex-fill" style="width:84%"></div></div><div class="ex-v">0.84</div></div>
+          <div class="ex-row"><div class="ex-k">Momentum</div><div class="ex-bar"><div class="ex-fill" style="width:78%"></div></div><div class="ex-v">0.78</div></div>
+          <div class="ex-row"><div class="ex-k">Revisions</div><div class="ex-bar"><div class="ex-fill" style="width:71%"></div></div><div class="ex-v">0.71</div></div>
+          <div class="ex-row"><div class="ex-k">Sentiment</div><div class="ex-bar"><div class="ex-fill" style="width:68%"></div></div><div class="ex-v">0.68</div></div>
+          <div class="ex-row"><div class="ex-k">Macro fit</div><div class="ex-bar"><div class="ex-fill" style="width:62%"></div></div><div class="ex-v">0.62</div></div>
+          <div class="ex-txt">Model attributes <b>0.89</b> composite score to: free-cash-flow inflection, autonomous optionality now partially priced, insider buying by CFO ($2.1M on 09/22), and positive revisions on EBITDA. Risk: delivery margin compression if GLP-1 demand drag persists.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: FLOWS ======== -->
+    <section class="view" id="view-flows">
+      <div class="view-head">
+        <div><div class="eyebrow">Market squad · Agent</div><h1 class="h2">≋  Fund Flows & Positioning Agent</h1></div>
+        <div class="chip orange">crowding ↑ semis + mega-cap</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Crowding scores · your top names</h3></div>
+          <table class="tbl">
+            <thead><tr><th>Ticker</th><th>Crowding</th><th>HF ownership %</th><th>13F QoQ Δ</th><th>Short interest</th><th>Options skew</th><th>Flag</th></tr></thead>
+            <tbody>
+              <tr><td>META</td><td class="warn">92</td><td>14.1%</td><td>+7 pts</td><td>1.1%</td><td>steep</td><td><span class="pill red">de-gross risk</span></td></tr>
+              <tr><td>NVDA</td><td class="warn">88</td><td>18.4%</td><td>+3 pts</td><td>1.4%</td><td>steep</td><td><span class="pill orange">watch</span></td></tr>
+              <tr><td>GOOGL</td><td>71</td><td>11.0%</td><td>+1</td><td>0.8%</td><td>mild</td><td><span class="pill ghost">neutral</span></td></tr>
+              <tr><td>UBER</td><td>52</td><td>8.7%</td><td>+2</td><td>1.0%</td><td>mild</td><td><span class="pill good">OK</span></td></tr>
+              <tr><td>COIN</td><td>66</td><td>9.4%</td><td>+1</td><td>3.6%</td><td>steep</td><td><span class="pill orange">watch</span></td></tr>
+              <tr><td>WBA (short)</td><td>24</td><td>3.1%</td><td>−1</td><td>12.4%</td><td>flat</td><td><span class="pill good">OK</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Smart-money divergence</h3><span class="chip ghost">top-tier funds vs. you</span></div>
+          <ul class="div-list">
+            <li><div><b>META</b> — Point long · 4 of top-10 funds trimming</div><span class="pill orange">divergent</span></li>
+            <li><div><b>UBER</b> — Point long · Lone Pine, Tiger Cub initiations</div><span class="pill good">aligned</span></li>
+            <li><div><b>MSFT</b> — Point long · Viking cut 40% QoQ</div><span class="pill orange">divergent</span></li>
+            <li><div><b>UNH</b> — Point short · Berkshire added</div><span class="pill red">counter</span></li>
+            <li><div><b>CRM</b> — Point long · Valueact topped up</div><span class="pill good">aligned</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">ETF flows · 5-day</h3></div>
+        <div class="etf">
+          <div class="etf-row"><span>SPY</span><div class="bar"><div class="fill" style="width:70%"></div></div><b>+$ 3.1 B</b></div>
+          <div class="etf-row"><span>QQQ</span><div class="bar"><div class="fill" style="width:52%"></div></div><b>+$ 1.8 B</b></div>
+          <div class="etf-row"><span>SMH</span><div class="bar"><div class="fill" style="width:28%"></div></div><b>+$ 0.7 B</b></div>
+          <div class="etf-row"><span>IWM</span><div class="bar"><div class="fill bad" style="width:34%"></div></div><b class="dn">−$ 0.9 B</b></div>
+          <div class="etf-row"><span>XLE</span><div class="bar"><div class="fill" style="width:14%"></div></div><b>+$ 0.3 B</b></div>
+          <div class="etf-row"><span>IBIT (BTC)</span><div class="bar"><div class="fill gold" style="width:46%"></div></div><b>+$ 1.4 B</b></div>
+          <div class="etf-row"><span>ETHA (ETH)</span><div class="bar"><div class="fill gold" style="width:12%"></div></div><b>+$ 0.2 B</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: EARNINGS ======== -->
+    <section class="view" id="view-earnings">
+      <div class="view-head">
+        <div><div class="eyebrow">Market squad · Agent</div><h1 class="h2">💬  Earnings & Sentiment Agent</h1></div>
+        <div class="chip">6 prints this week · 112 transcripts parsed</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Tone shift QoQ · hedging language</h3></div>
+          <table class="tbl">
+            <thead><tr><th>Ticker</th><th>Last call</th><th>Tone Δ</th><th>Hedging</th><th>Guidance</th><th>Read-across</th></tr></thead>
+            <tbody>
+              <tr><td>JPM (upcoming)</td><td>Thu 09:00</td><td class="orange">−0.21</td><td>↑</td><td>cautious consumer</td><td>V · MA · AXP</td></tr>
+              <tr><td>NFLX</td><td>Sep 24</td><td class="good">+0.34</td><td>↓</td><td>raised</td><td>DIS · ROKU</td></tr>
+              <tr><td>NVDA</td><td>Aug 28</td><td class="good">+0.18</td><td>flat</td><td>strong</td><td>AVGO · AMD · ANET</td></tr>
+              <tr><td>MSFT</td><td>Jul 30</td><td class="bad">−0.42</td><td>↑↑</td><td>reaffirmed</td><td>AMZN AWS · GOOGL</td></tr>
+              <tr><td>META</td><td>Jul 31</td><td class="good">+0.22</td><td>↓</td><td>reaffirmed</td><td>GOOGL · PINS · SNAP</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Social sentiment · bot-filtered</h3></div>
+          <div class="social">
+            <div class="s-row"><span>NVDA</span><div class="sent"><div class="sent-neg" style="width:22%"></div><div class="sent-pos" style="width:58%"></div></div><b>58/22</b></div>
+            <div class="s-row"><span>TSLA</span><div class="sent"><div class="sent-neg" style="width:38%"></div><div class="sent-pos" style="width:42%"></div></div><b>42/38</b></div>
+            <div class="s-row"><span>META</span><div class="sent"><div class="sent-neg" style="width:14%"></div><div class="sent-pos" style="width:68%"></div></div><b>68/14</b></div>
+            <div class="s-row"><span>COIN</span><div class="sent"><div class="sent-neg" style="width:20%"></div><div class="sent-pos" style="width:60%"></div></div><b>60/20</b></div>
+            <div class="s-row"><span>AMD</span><div class="sent"><div class="sent-neg" style="width:28%"></div><div class="sent-pos" style="width:48%"></div></div><b>48/28</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: MACRO ======== -->
+    <section class="view" id="view-macro">
+      <div class="view-head">
+        <div><div class="eyebrow">Market squad · Agent</div><h1 class="h2">🌍  Macro & Regime Agent</h1></div>
+        <div class="chip red">CPI tomorrow · hot-print = −38 bps NAV</div>
+      </div>
+      <div class="grid-4">
+        <div class="kpi"><div class="k-lab">CPI YoY</div><div class="k-val">3.1%</div><div class="k-sub up">+0.1 vs. prior</div></div>
+        <div class="kpi"><div class="k-lab">Core PCE</div><div class="k-val">2.8%</div><div class="k-sub">target 2.0</div></div>
+        <div class="kpi"><div class="k-lab">Fed funds</div><div class="k-val">4.75%</div><div class="k-sub">market: 2 cuts by Mar</div></div>
+        <div class="kpi"><div class="k-lab">Regime</div><div class="k-val">Late cycle</div><div class="k-sub">tightening bias</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Position-level macro betas</h3></div>
+          <table class="tbl">
+            <thead><tr><th>Ticker</th><th>β 10Y (+50bp)</th><th>β DXY (+1%)</th><th>β WTI (+5%)</th><th>β VIX (+5pt)</th><th>Scenario PnL (hot CPI)</th></tr></thead>
+            <tbody>
+              <tr><td>NVDA</td><td>−0.42</td><td>−0.18</td><td>+0.02</td><td>−0.63</td><td class="dn">−$ 820k</td></tr>
+              <tr><td>MSFT</td><td>−0.31</td><td>−0.11</td><td>+0.01</td><td>−0.49</td><td class="dn">−$ 410k</td></tr>
+              <tr><td>META</td><td>−0.28</td><td>−0.14</td><td>+0.01</td><td>−0.52</td><td class="dn">−$ 362k</td></tr>
+              <tr><td>XLE basket</td><td>+0.14</td><td>−0.22</td><td>+0.61</td><td>−0.18</td><td class="up">+$ 141k</td></tr>
+              <tr><td>UNH (short)</td><td>+0.09</td><td>+0.04</td><td>−0.02</td><td>+0.11</td><td class="up">+$ 61k</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Scenario PnL</h3><span class="chip ghost">whole book</span></div>
+          <div class="scenario">
+            <div class="sc-row"><span>Base case</span><b class="good">+$ 1.2 M</b></div>
+            <div class="sc-row"><span>Hot CPI (+0.4% MoM core)</span><b class="dn">−$ 4.78 M · −38 bps</b></div>
+            <div class="sc-row"><span>Cold CPI (0.1%)</span><b class="up">+$ 6.1 M · +49 bps</b></div>
+            <div class="sc-row"><span>Fed +25 surprise</span><b class="dn">−$ 7.9 M</b></div>
+            <div class="sc-row"><span>10Y +50 bp</span><b class="dn">−$ 9.4 M</b></div>
+            <div class="sc-row"><span>Risk-off (VIX &gt;30)</span><b class="dn">−$ 18.0 M</b></div>
+          </div>
+          <div class="card-foot">
+            <button class="btn primary">Deploy hedge ladder</button>
+            <button class="btn ghost">Open what-if</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: DIGITAL ======== -->
+    <section class="view" id="view-digital">
+      <div class="view-head">
+        <div><div class="eyebrow">Market squad · Agent · 24/7/365</div><h1 class="h2">◉  Digital Assets & Tokenization</h1></div>
+        <div class="chip gold">live · tokenized basis −1.82%</div>
+      </div>
+
+      <div class="grid-4">
+        <div class="kpi"><div class="k-lab">BTC</div><div class="k-val">$ 101,842</div><div class="k-sub dn">−2.1% 24h</div></div>
+        <div class="kpi"><div class="k-lab">ETH</div><div class="k-val">$ 3,842</div><div class="k-sub dn">−3.4%</div></div>
+        <div class="kpi"><div class="k-lab">Perp funding (BTC)</div><div class="k-val warn">+0.082%</div><div class="k-sub">8h · crowded longs</div></div>
+        <div class="kpi"><div class="k-lab">Open interest</div><div class="k-val">$ 42.1 B</div><div class="k-sub up">+18% 24h</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Tokenized equities · basis to primary listing</h3></div>
+          <table class="tbl">
+            <thead><tr><th>Token</th><th>Venue</th><th>Last</th><th>NYSE/Nasdaq Fri close</th><th>Basis</th><th>Depth 10bp</th><th>Signal</th></tr></thead>
+            <tbody>
+              <tr><td>tAAPL</td><td>Ondo</td><td>231.42</td><td>235.80</td><td class="dn">−1.86%</td><td>$ 2.1M</td><td><span class="pill orange">weekend gap</span></td></tr>
+              <tr><td>tNVDA</td><td>xStocks</td><td>184.10</td><td>189.42</td><td class="dn">−2.81%</td><td>$ 1.4M</td><td><span class="pill red">gap-risk</span></td></tr>
+              <tr><td>tTSLA</td><td>bStocks</td><td>246.75</td><td>245.65</td><td class="up">+0.45%</td><td>$ 0.9M</td><td><span class="pill good">neutral</span></td></tr>
+              <tr><td>tSPY</td><td>Securitize</td><td>582.90</td><td>586.44</td><td class="dn">−0.60%</td><td>$ 3.8M</td><td><span class="pill ghost">watch</span></td></tr>
+              <tr><td>tMETA</td><td>Ondo</td><td>589.00</td><td>592.44</td><td class="dn">−0.58%</td><td>$ 1.1M</td><td><span class="pill good">OK</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card dark-card">
+          <div class="card-head"><h3 class="card-title white">Weekend price discovery · tAAPL</h3><span class="chip gold">illustrative</span></div>
+          <svg viewBox="0 0 500 220" class="chart" id="weekend-chart"></svg>
+          <div class="legend-inline white">
+            <span><i class="sq ltline"></i>Primary (NYSE)</span>
+            <span><i class="sq gold"></i>Tokenized 24/7</span>
+            <span class="right">Monday open projection: <b class="orange">−1.9%</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Crypto cross-asset bridge</h3><span class="chip ghost">to equity book</span></div>
+        <table class="tbl">
+          <thead><tr><th>Ticker</th><th>Crypto β</th><th>Position $</th><th>24h impact</th><th>Risk Agent</th></tr></thead>
+          <tbody>
+            <tr><td>COIN</td><td>0.86 BTC</td><td>$ 42.1 M</td><td class="dn">−$ 760k</td><td><span class="pill orange">watch</span></td></tr>
+            <tr><td>MSTR</td><td>1.42 BTC</td><td>$ 61.8 M</td><td class="dn">−$ 1.84 M</td><td><span class="pill red">put spread queued</span></td></tr>
+            <tr><td>HOOD</td><td>0.44 BTC</td><td>$ 18.4 M</td><td class="dn">−$ 170k</td><td><span class="pill ghost">OK</span></td></tr>
+            <tr><td>CLSK</td><td>1.14 BTC</td><td>$ 11.1 M</td><td class="dn">−$ 266k</td><td><span class="pill good">OK</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: MCP ======== -->
+    <section class="view" id="view-mcp">
+      <div class="view-head">
+        <div><div class="eyebrow">Deploy · Point MCP server</div><h1 class="h2">Our agents inside any LLM.</h1></div>
+        <div class="chip gold">entitlements · audit · no data in training</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Where teams already work</h3></div>
+          <div class="llm-grid">
+            <div class="llm"><div class="llm-i">🅰</div><div><b>Claude</b><div class="muted">4 users · 142 tool calls / 7d</div></div></div>
+            <div class="llm"><div class="llm-i">⚫</div><div><b>ChatGPT</b><div class="muted">6 users · 310 tool calls / 7d</div></div></div>
+            <div class="llm"><div class="llm-i">🅼</div><div><b>Microsoft Copilot</b><div class="muted">2 users · 44</div></div></div>
+            <div class="llm"><div class="llm-i">🅶</div><div><b>Gemini</b><div class="muted">1 user · 12</div></div></div>
+            <div class="llm"><div class="llm-i">⌁</div><div><b>In-house agents</b><div class="muted">quant notebook · 820 / wk</div></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Agent tools exposed</h3><span class="chip ghost">8 of 24</span></div>
+          <ul class="mcp-list">
+            <li><code>get_morning_brief</code><span>Ranked overnight risks and opportunities</span></li>
+            <li><code>forecast_breaches</code><span>IMA / limit breach probabilities, 1–5 days</span></li>
+            <li><code>run_what_if</code><span>Impact of proposed trades on risk and limits</span></li>
+            <li><code>explain_pnl</code><span>Attribution by name, sector, strategy, period</span></li>
+            <li><code>position_intel</code><span>News, sentiment, catalysts for a holding</span></li>
+            <li><code>rank_universe</code><span>AI + quant ranking and trading ranges</span></li>
+            <li><code>crowding_score</code><span>Fund-flow and crowding risk for a ticker</span></li>
+            <li><code>tokenized_basis</code><span>Token vs. primary-listing premium</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Audit log · last 60 min</h3><span class="chip ghost">client data never used for training</span></div>
+        <table class="tbl mono">
+          <thead><tr><th>Time</th><th>User</th><th>LLM</th><th>Tool</th><th>Args</th><th>Latency</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>06:11:42</td><td>s.raju</td><td>Claude</td><td>run_what_if</td><td>{trim: "NVDA", pct: 12}</td><td>640ms</td><td><span class="pill good">200</span></td></tr>
+            <tr><td>06:08:14</td><td>k.lee</td><td>ChatGPT</td><td>forecast_breaches</td><td>{horizon: 5}</td><td>412ms</td><td><span class="pill good">200</span></td></tr>
+            <tr><td>06:03:02</td><td>uma</td><td>Claude</td><td>get_morning_brief</td><td>{fund: "alpha"}</td><td>1.2s</td><td><span class="pill good">200</span></td></tr>
+            <tr><td>05:58:40</td><td>quants</td><td>Notebook</td><td>rank_universe</td><td>{univ: "R2000"}</td><td>2.1s</td><td><span class="pill good">200</span></td></tr>
+            <tr><td>05:48:19</td><td>m.obrien</td><td>Copilot</td><td>crowding_score</td><td>{ticker: "META"}</td><td>280ms</td><td><span class="pill good">200</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: EXECUTE ======== -->
+    <section class="view" id="view-execute">
+      <div class="view-head">
+        <div><div class="eyebrow">Deploy · Point Execute</div><h1 class="h2">From decision to execution.  Rules. Guardrails. Kill switch.</h1></div>
+        <div class="chip">Autonomy: <b>Confirm</b></div>
+      </div>
+
+      <div class="exec-flow">
+        <div class="xf-step"><div class="xf-i">⌾</div><div class="xf-k">Market data</div><div class="xf-s">1-min bars · ticks</div></div>
+        <div class="xf-arrow">→</div>
+        <div class="xf-step"><div class="xf-i">📈</div><div class="xf-k">Signal engine</div><div class="xf-s">VWAP · OR · momentum</div></div>
+        <div class="xf-arrow">→</div>
+        <div class="xf-step"><div class="xf-i">▣</div><div class="xf-k">Rules engine</div><div class="xf-s">entries · exits · sizing</div></div>
+        <div class="xf-arrow">→</div>
+        <div class="xf-step risk"><div class="xf-i">🛡</div><div class="xf-k">Risk gate</div><div class="xf-s">limits · loss caps</div></div>
+        <div class="xf-arrow">→</div>
+        <div class="xf-step"><div class="xf-i">⇄</div><div class="xf-k">Broker</div><div class="xf-s">FIX / API</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Autonomy level</h3></div>
+          <div class="autonomy">
+            <label class="auto-opt"><input type="radio" name="auto"/><div><b>Alert</b><span>signal sent to trader</span></div></label>
+            <label class="auto-opt active"><input type="radio" name="auto" checked/><div><b>Confirm</b><span>one-click approval → auto-execute</span></div></label>
+            <label class="auto-opt"><input type="radio" name="auto"/><div><b>Autonomous</b><span>executes within pre-approved rules</span></div></label>
+          </div>
+          <div class="killbar">
+            <div><b>Kill switch</b><div class="muted">auto-flatten on max daily loss</div></div>
+            <label class="toggle"><input type="checkbox" checked/><span></span></label>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Guardrails</h3></div>
+          <ul class="guards">
+            <li><span class="g-ok">✓</span>Position cap · 10% NAV single name</li>
+            <li><span class="g-ok">✓</span>Notional cap · $25M per order</li>
+            <li><span class="g-ok">✓</span>Order-rate cap · 60 orders/min</li>
+            <li><span class="g-ok">✓</span>Backtest & paper-trade pre-approval</li>
+            <li><span class="g-ok">✓</span>Full audit log + trade replay</li>
+            <li><span class="g-ok">✓</span>Client broker/accounts · Point never custodies</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Today's execution tape</h3><span class="chip ghost">47 fills · $12.4M notional</span></div>
+        <table class="tbl mono">
+          <thead><tr><th>Time</th><th>Strategy</th><th>Side</th><th>Ticker</th><th>Qty</th><th>Px</th><th>VWAP Δ</th><th>Rule</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>09:31:04</td><td>OR breakout</td><td>BUY</td><td>UBER</td><td>12,000</td><td>82.44</td><td class="good">−3 bp</td><td>vwap_dev_2</td><td><span class="pill good">filled</span></td></tr>
+            <tr><td>09:34:11</td><td>Momentum 5m</td><td>BUY</td><td>ANET</td><td>3,400</td><td>412.80</td><td class="good">−5 bp</td><td>mom_5m</td><td><span class="pill good">filled</span></td></tr>
+            <tr><td>09:42:27</td><td>Mean rev</td><td>SELL</td><td>MSFT</td><td>8,100</td><td>412.95</td><td class="good">+2 bp</td><td>rev_rsi</td><td><span class="pill good">filled</span></td></tr>
+            <tr><td>09:51:40</td><td>Hedge ladder</td><td>BUY P</td><td>SMH 215/205</td><td>240 lots</td><td>1.78</td><td>—</td><td>risk_gate</td><td><span class="pill ok">working</span></td></tr>
+            <tr><td>10:04:18</td><td>Trim alpha-decay</td><td>SELL</td><td>MSFT</td><td>4,200</td><td>412.10</td><td class="good">+1 bp</td><td>alpha_hl</td><td><span class="pill good">filled</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======== VIEW: GOVERNANCE ======== -->
+    <section class="view" id="view-governance">
+      <div class="view-head">
+        <div><div class="eyebrow">Deploy · Governance</div><h1 class="h2">Entitlements · audit · model risk</h1></div>
+        <div class="chip">SOC 2 · ISO 27001</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Users & entitlements</h3></div>
+          <table class="tbl">
+            <thead><tr><th>User</th><th>Role</th><th>Agents</th><th>Funds</th><th>Autonomy</th><th>Last active</th></tr></thead>
+            <tbody>
+              <tr><td>Umabharathi M.</td><td>CIO</td><td>all</td><td>Alpha, Global</td><td>Confirm</td><td>now</td></tr>
+              <tr><td>Suresh Raju</td><td>Founder</td><td>all</td><td>all</td><td>Confirm</td><td>2m</td></tr>
+              <tr><td>Priya Shah</td><td>Analyst · tech</td><td>Research · Earnings</td><td>Alpha</td><td>Alert</td><td>19m</td></tr>
+              <tr><td>Kiran Lee</td><td>Risk</td><td>Risk · Macro · Flows</td><td>Alpha, Global</td><td>Alert</td><td>31m</td></tr>
+              <tr><td>Mary O'Brien</td><td>IR</td><td>IR · PnL</td><td>Alpha</td><td>Alert</td><td>1h</td></tr>
+              <tr><td>Quants bot</td><td>Service</td><td>MCP · all read</td><td>all</td><td>—</td><td>now</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3 class="card-title">Audit trail · recent approvals</h3></div>
+          <ul class="audit">
+            <li><b>#AC-20261006-087</b> · trim META 50% · approved by Uma · 16:04 Fri</li>
+            <li><b>#AC-20261006-091</b> · SMH put spread · approved by Suresh · 16:12 Fri</li>
+            <li><b>#AC-20261006-094</b> · hot-CPI hedge draft · modified → saved · 16:28 Fri</li>
+            <li><b>#AC-20261007-003</b> · NVDA trim 12% · pending · now</li>
+          </ul>
+          <div class="card-foot">
+            <button class="btn ghost">Export audit (CSV)</button>
+            <button class="btn ghost">Export audit (JSON)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3 class="card-title">Model risk register</h3></div>
+        <table class="tbl">
+          <thead><tr><th>Agent</th><th>Model</th><th>Type</th><th>Last validation</th><th>Drift</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td>Risk & Guideline</td><td>PointRisk-v2.3</td><td>deterministic + LLM</td><td>Sep 28</td><td>0.4%</td><td>K. Lee</td></tr>
+            <tr><td>Research & Alpha</td><td>PointAlpha-v4.1</td><td>LLM + quant</td><td>Oct 1</td><td>1.1%</td><td>P. Shah</td></tr>
+            <tr><td>Technical Signals</td><td>PointTech-v1.8</td><td>deterministic</td><td>Aug 30</td><td>0.2%</td><td>K. Lee</td></tr>
+            <tr><td>Earnings Sentiment</td><td>PointTone-v3.0</td><td>LLM</td><td>Sep 15</td><td>2.3%</td><td>P. Shah</td></tr>
+            <tr><td>Macro & Regime</td><td>PointMacro-v2.0</td><td>Bayesian + LLM</td><td>Sep 22</td><td>0.9%</td><td>Suresh</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- =============== CARD DETAIL DRAWER =============== -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-inner" id="drawer-inner"><!-- populated by JS --></div>
+</aside>
+
+<script src="app.js"></script>
+</body>
+</html>

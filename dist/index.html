@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Point — Agentic Intelligence for Investment Teams</title>
+<meta name="description" content="Ten coordinated AI agents that turn portfolio, market and compliance data into predictions and recommended actions — before the breach, before the drawdown."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141210;--bg-2:#1b1815;--panel:#201c18;--panel-2:#262019;
+  --line:#322b23;--line-2:#3d342a;
+  --txt:#f3ece1;--txt-2:#b9ad9c;--txt-3:#8a7e6e;
+  --orange:#e8603b;--orange-2:#f2744f;--gold:#d4a42b;--gold-2:#e3b949;--cream:#f0e8da;
+  --good:#58b06a;
+  --sans:'Inter',system-ui,sans-serif;--serif:'Fraunces',Georgia,serif;--mono:'JetBrains Mono',monospace;
+  --maxw:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.orange{color:var(--orange)}.gold{color:var(--gold-2)}.muted{color:var(--txt-2)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.3px;margin:0}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--orange);font-weight:600}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(16px);
+  background:rgba(20,18,16,.72);border-bottom:1px solid var(--line);transition:.3s}
+.nav-in{display:flex;align-items:center;gap:28px;height:64px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:700}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(140deg,var(--orange),#c7421f);
+  display:grid;place-items:center;box-shadow:0 6px 18px -8px var(--orange)}
+.logo-name{font-family:var(--serif);font-size:19px}
+.nav-links{display:flex;gap:26px;margin-left:12px}
+.nav-links a{font-size:14px;color:var(--txt-2);font-weight:500;transition:.15s}
+.nav-links a:hover{color:var(--txt)}
+.nav-cta{margin-left:auto;display:flex;gap:10px;align-items:center}
+.btn{font-family:var(--sans);font-weight:600;font-size:14px;border-radius:9px;padding:10px 18px;
+  border:1px solid transparent;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--orange);color:#fff}
+.btn.primary:hover{background:var(--orange-2);transform:translateY(-1px)}
+.btn.ghost{background:transparent;border-color:var(--line-2);color:var(--txt)}
+.btn.ghost:hover{border-color:var(--txt-3)}
+.btn.lg{padding:14px 26px;font-size:15px}
+
+/* hero */
+.hero{position:relative;padding:150px 0 90px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.hero h1{font-size:60px;line-height:1.04;font-weight:600}
+.hero p.lead{font-size:18px;line-height:1.6;color:var(--txt-2);max-width:540px;margin:24px 0 0}
+.hero-cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+.hero-eq{display:flex;align-items:center;gap:10px;margin-top:40px;flex-wrap:wrap}
+.pillbox{padding:9px 16px;border-radius:30px;font-size:13px;font-weight:600;border:1px solid var(--line-2)}
+.pillbox.o{background:var(--orange);color:#fff;border-color:transparent}
+.pillbox.g{background:var(--gold);color:#1a1308;border-color:transparent}
+.pillbox.w{background:var(--panel);color:var(--txt)}
+.eq-op{color:var(--txt-3);font-weight:700;font-size:16px}
+.author{margin-top:40px;font-size:13px;color:var(--txt-3)}
+.author b{color:var(--txt-2)}
+
+/* constellation */
+.constellation{position:relative;aspect-ratio:1;max-width:440px;margin:0 auto;width:100%}
+.c-center{position:absolute;left:50%;top:50%;width:92px;height:92px;transform:translate(-50%,-50%);
+  background:#fff;border-radius:50%;display:grid;place-items:center;z-index:3;
+  box-shadow:0 0 0 10px rgba(255,255,255,.05),0 20px 50px -14px rgba(232,96,59,.5)}
+.c-center svg{width:48px;height:48px}
+.node{position:absolute;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+  font-size:20px;z-index:2;transform:translate(-50%,-50%);transition:.3s;cursor:default}
+.node.o{background:linear-gradient(140deg,var(--orange),#c7421f)}
+.node.g{background:linear-gradient(140deg,var(--gold),#a9811c)}
+.node:hover{transform:translate(-50%,-50%) scale(1.14)}
+.spoke{position:absolute;left:50%;top:50%;height:1px;background:linear-gradient(90deg,rgba(232,96,59,.5),transparent);
+  transform-origin:left center;z-index:1}
+.glow{position:absolute;width:560px;height:560px;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(232,96,59,.16),transparent 62%);z-index:0;pointer-events:none}
+
+/* stat band */
+.band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2)}
+.band-in{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:36px 0}
+.stat .n{font-family:var(--serif);font-size:38px;font-weight:700}
+.stat .l{font-size:13px;color:var(--txt-3);margin-top:4px}
+
+/* sections */
+section.blk{padding:90px 0}
+.sec-head{max-width:680px;margin-bottom:46px}
+.sec-head h2{font-size:40px;line-height:1.1;margin-top:12px}
+.sec-head p{font-size:17px;color:var(--txt-2);line-height:1.6;margin-top:16px}
+
+/* vision cards */
+.vision{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.v-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;transition:.2s}
+.v-card:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.v-from{font-size:13px;color:var(--txt-3);text-decoration:line-through}
+.v-bolt{color:var(--orange);font-size:22px;margin:14px 0 8px}
+.v-to{font-family:var(--serif);font-size:21px;font-weight:600}
+.v-desc{font-size:13.5px;color:var(--txt-2);margin-top:8px;line-height:1.55}
+
+/* agents */
+.squads{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.squad-label{font-size:13px;text-transform:uppercase;letter-spacing:1.4px;font-weight:600;margin-bottom:16px}
+.squad-label.o{color:var(--orange)}.squad-label.g{color:var(--gold-2)}
+.ag-row{display:flex;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);
+  border-radius:13px;padding:15px 17px;margin-bottom:11px;transition:.18s}
+.ag-row:hover{border-color:var(--line-2);transform:translateX(4px)}
+.ag-ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;flex:none}
+.ag-ic.o{background:linear-gradient(140deg,var(--orange),#c7421f)}
+.ag-ic.g{background:linear-gradient(140deg,var(--gold),#a9811c)}
+.ag-name{font-weight:600;font-size:15px}
+.ag-desc{font-size:12.5px;color:var(--txt-3);margin-top:2px}
+.conductor-strip{margin-top:30px;background:#14100c;border:1px solid var(--line-2);border-radius:16px;
+  padding:26px 30px;display:flex;align-items:center;gap:22px}
+.cs-brain{width:60px;height:60px;border-radius:50%;background:#000;display:grid;place-items:center;flex:none}
+.cs-brain svg{width:34px;height:34px}
+.cs-title{font-family:var(--serif);font-size:22px;font-weight:600}
+.cs-desc{color:var(--txt-2);font-size:14px;margin-top:4px}
+.outputs{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.out-chip{font-size:12px;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 11px;color:var(--txt-2)}
+
+/* capability */
+.cap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.cap.rev .cap-visual{order:-1}
+.steps{display:flex;flex-direction:column;gap:14px}
+.step{display:flex;gap:15px;align-items:flex-start}
+.step-n{width:30px;height:30px;border-radius:50%;background:var(--orange);color:#fff;font-weight:700;
+  display:grid;place-items:center;flex:none;font-size:14px}
+.step-h{font-weight:600;font-size:15px;font-family:var(--serif)}
+.step-d{font-size:13.5px;color:var(--txt-2);margin-top:2px;line-height:1.5}
+.mockcard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 30px 70px -30px rgba(0,0,0,.8)}
+.mc-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.mc-crit{background:#cc4a46;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px}
+.mc-meta{font-size:12px;color:var(--txt-3)}
+.mc-title{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.3}
+.mc-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:16px 0}
+.mc-m{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.mc-v{font-family:var(--serif);font-size:24px;font-weight:700}
+.mc-l{font-size:11px;color:var(--txt-3);margin-top:2px}
+.mc-body{font-size:13px;color:var(--txt-2);line-height:1.5}
+.mc-foot{display:flex;gap:9px;margin-top:16px}
+.mc-btn{font-size:13px;font-weight:600;padding:8px 16px;border-radius:8px;border:none;cursor:pointer}
+.mc-btn.app{background:var(--orange);color:#fff}
+.mc-btn.mod{background:#17130f;color:var(--txt);border:1px solid var(--line-2)}
+.mc-btn.dis{background:var(--panel-2);color:var(--txt-3)}
+/* tokenized chart card */
+.tok-card{background:#15110d;border:1px solid var(--line-2);border-radius:18px;padding:24px}
+.chart{width:100%;height:auto;display:block}
+.legend-inline{display:flex;gap:18px;font-size:12px;color:var(--txt-2);margin-top:14px;flex-wrap:wrap}
+.legend-inline i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.feat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.feat{background:rgba(232,96,59,.07);border:1px solid rgba(232,96,59,.2);border-radius:12px;padding:16px}
+.feat h4{font-family:var(--serif);font-size:15px;margin:0 0 6px}
+.feat p{font-size:12.5px;color:var(--txt-2);margin:0;line-height:1.5}
+
+/* product family */
+.family{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.fam{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:28px;transition:.2s;position:relative;overflow:hidden}
+.fam:hover{border-color:var(--line-2);transform:translateY(-4px)}
+.fam-ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;margin-bottom:18px}
+.fam-ic.o{background:linear-gradient(140deg,var(--orange),#c7421f)}
+.fam-ic.g{background:linear-gradient(140deg,var(--gold),#a9811c)}
+.fam-ic.d{background:#000;border:1px solid var(--line-2)}
+.fam h3{font-size:22px}
+.fam .tag{color:var(--orange);font-weight:600;font-size:13px;margin:5px 0 12px;display:block}
+.fam p{font-size:13.5px;color:var(--txt-2);line-height:1.55;margin:0 0 16px}
+.fam .kv{font-size:12.5px;color:var(--txt-3);padding:5px 0;border-top:1px solid var(--line)}
+.fam .kv b{color:var(--txt-2)}
+.shared{margin-top:22px;background:#14100c;border:1px solid var(--line-2);border-radius:14px;padding:20px 26px;
+  font-size:14px;color:var(--txt-2)}
+.shared b{color:var(--orange);font-weight:600}
+
+/* mcp tools */
+.mcp{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.mcp-tool{display:flex;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);
+  border-radius:11px;padding:13px 16px}
+.mcp-tool code{font-family:var(--mono);font-size:13px;color:var(--orange-2);background:rgba(232,96,59,.1);
+  padding:5px 10px;border-radius:6px;white-space:nowrap}
+.mcp-tool span{font-size:12.5px;color:var(--txt-2)}
+
+/* cta */
+.cta{text-align:center;padding:100px 0;position:relative}
+.cta h2{font-size:46px;line-height:1.1}
+.cta p{font-size:18px;color:var(--txt-2);margin:18px auto 34px;max-width:560px;line-height:1.6}
+.cta .glow{width:720px;height:420px;background:radial-gradient(ellipse,rgba(232,96,59,.14),transparent 65%)}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:46px 0;background:var(--bg-2)}
+.foot-in{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.foot-links{display:flex;gap:22px;font-size:13px;color:var(--txt-3)}
+.foot-links a:hover{color:var(--txt)}
+.conf{font-size:12px;color:var(--txt-3)}
+
+/* demo */
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.demo-list{list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column;gap:12px}
+.demo-list li{font-size:14px;color:var(--txt-2);display:flex;gap:11px;align-items:flex-start;line-height:1.5}
+.dchk{color:var(--good);font-weight:700;flex:none}
+.demo-contact{margin-top:26px;font-size:14px;color:var(--txt-3)}
+.demo-contact a{color:var(--orange-2);font-weight:600}
+.demo-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;
+  box-shadow:0 30px 70px -30px rgba(0,0,0,.8);display:flex;flex-direction:column;gap:14px;position:relative}
+.df-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.demo-card label{font-size:12px;font-weight:600;color:var(--txt-2);display:flex;flex-direction:column;gap:6px}
+.demo-card input,.demo-card select,.demo-card textarea{
+  font-family:var(--sans);font-size:14px;font-weight:400;color:var(--txt);background:var(--bg-2);
+  border:1px solid var(--line-2);border-radius:9px;padding:11px 12px;outline:none;transition:.15s;width:100%}
+.demo-card textarea{resize:vertical}
+.demo-card input::placeholder,.demo-card textarea::placeholder{color:var(--txt-3)}
+.demo-card input:focus,.demo-card select:focus,.demo-card textarea:focus{border-color:var(--orange);
+  box-shadow:0 0 0 3px rgba(232,96,59,.14)}
+.demo-card input:invalid:not(:placeholder-shown){border-color:#cc4a46}
+.df-chips{display:flex;gap:8px;flex-wrap:wrap}
+.df-chip{font-size:13px;font-weight:600;padding:8px 14px;border-radius:9px;border:1px solid var(--line-2);
+  background:var(--bg-2);color:var(--txt-2);cursor:pointer;transition:.15s;user-select:none}
+.df-chip:hover{border-color:var(--txt-3)}
+.df-chip.on{background:rgba(232,96,59,.12);border-color:var(--orange);color:var(--txt)}
+.df-note{font-size:11.5px;color:var(--txt-3);text-align:center}
+.df-success{display:none;align-items:center;gap:14px;background:rgba(88,176,106,.1);
+  border:1px solid rgba(88,176,106,.3);border-radius:12px;padding:16px;margin-top:4px}
+.df-success.show{display:flex}
+.dfs-check{width:34px;height:34px;border-radius:50%;background:var(--good);color:#fff;font-weight:700;
+  display:grid;place-items:center;flex:none}
+.df-error{display:none;font-size:12.5px;line-height:1.5;color:#e0716d;background:rgba(204,74,70,.1);
+  border:1px solid rgba(204,74,70,.3);border-radius:10px;padding:12px 14px;margin-top:4px}
+.df-error.show{display:block}
+.df-error a{color:#e0716d;font-weight:600;text-decoration:underline}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:.7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .hero-grid,.cap,.cap.rev{grid-template-columns:1fr}
+  .cap.rev .cap-visual{order:0}
+  .constellation{max-width:360px;margin-top:20px}
+  .vision,.family,.band-in,.feat-row{grid-template-columns:1fr 1fr}
+  .squads,.mcp,.demo-grid{grid-template-columns:1fr}
+  .hero h1{font-size:42px}.sec-head h2{font-size:30px}.cta h2{font-size:32px}
+  .nav-links{display:none}
+}
+@media(max-width:560px){.vision,.band-in,.feat-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="logo">
+      <span class="logo-mark"><svg viewBox="0 0 32 32" width="20" height="20"><path fill="#fff" d="M16 2C9 2 4 7 4 14c0 5 3 9 7 11v3c0 1 1 2 2 2h6c1 0 2-1 2-2v-3c4-2 7-6 7-11 0-7-5-12-12-12Zm-1 4h2v16h-2V6Z"/></svg></span>
+      <span class="logo-name">Point</span>
+    </a>
+    <div class="nav-links">
+      <a href="#platform">Platform</a>
+      <a href="#how">How it works</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#family">Products</a>
+      <a href="#mcp">Point MCP</a>
+      <a href="#demo">Request a demo</a>
+    </div>
+    <div class="nav-cta">
+      <button class="btn ghost" id="theme-btn" title="Toggle theme" style="padding:9px 12px">
+        <svg class="ic-moon" viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" width="17" height="17" style="display:none"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-5v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <a href="app.html" class="btn primary">Launch Platform →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Point Agentic Solutions Inc.</div>
+      <h1>Agentic intelligence for <span class="orange">investment teams</span>.</h1>
+      <p class="lead">Ten coordinated AI agents that turn portfolio, market and compliance data into predictions and recommended actions — <b>before the breach, before the drawdown.</b></p>
+      <div class="hero-cta">
+        <a href="app.html" class="btn primary lg">Launch the Platform →</a>
+        <a href="#how" class="btn ghost lg">See how it works</a>
+      </div>
+      <div class="hero-eq">
+        <span class="pillbox o">Portfolio Agents Squad</span>
+        <span class="eq-op">+</span>
+        <span class="pillbox g">Market Agents Squad</span>
+        <span class="eq-op">=</span>
+        <span class="pillbox w">Investment Intelligence</span>
+      </div>
+      <div class="author">Founded by <b>Suresh Raju</b> · the agentic decision layer for the front office</div>
+    </div>
+
+    <div class="constellation" id="constellation">
+      <div class="glow"></div>
+      <div class="c-center"><svg viewBox="0 0 32 32"><path fill="#141210" d="M16 3C10 3 6 8 6 14c0 4 2 7 5 9v3c0 1 .5 2 2 2h6c1.5 0 2-1 2-2v-3c3-2 5-5 5-9 0-6-5-11-10-11Zm-1 3h2v18h-2V6Z"/></svg></div>
+      <!-- nodes injected by JS -->
+    </div>
+  </div>
+</header>
+
+<!-- STAT BAND -->
+<div class="band">
+  <div class="wrap band-in">
+    <div class="stat reveal"><div class="n orange">10</div><div class="l">Specialist agents, one shared book</div></div>
+    <div class="stat reveal"><div class="n">24/7/365</div><div class="l">Including weekends on tokenized venues</div></div>
+    <div class="stat reveal"><div class="n gold">$963M</div><div class="l">Tokenized-equity market, Jan 2026</div></div>
+    <div class="stat reveal"><div class="n">1–5 day</div><div class="l">Limit-breach probabilities with drivers</div></div>
+  </div>
+</div>
+
+<!-- VISION -->
+<section class="blk" id="vision">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Vision</div>
+      <h2>From dashboards to decisions.</h2>
+      <p>An action-oriented platform where ten specialist agents continuously watch the portfolio and the market, predict what matters, and recommend the next best action.</p>
+    </div>
+    <div class="vision">
+      <div class="v-card reveal"><div class="v-from">Reactive</div><div class="v-bolt">⚡</div><div class="v-to">Predictive</div><div class="v-desc">Breach probabilities and drawdown risk before they happen.</div></div>
+      <div class="v-card reveal"><div class="v-from">Pull</div><div class="v-bolt">⚡</div><div class="v-to">Push</div><div class="v-desc">Ranked alerts with a recommended action — not another screen to check.</div></div>
+      <div class="v-card reveal"><div class="v-from">Point-in-time</div><div class="v-bolt">⚡</div><div class="v-to">Always-on</div><div class="v-desc">Event-driven, 24/7 — including weekends on tokenized venues.</div></div>
+      <div class="v-card reveal"><div class="v-from">Ten tools</div><div class="v-bolt">⚡</div><div class="v-to">One agent team</div><div class="v-desc">Ten agents sharing one view of the book, coordinated by a Conductor.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM / AGENTS -->
+<section class="blk" id="platform" style="background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">The Platform</div>
+      <h2>Ten specialist agents, one coordinated team.</h2>
+    </div>
+    <div class="squads">
+      <div class="reveal">
+        <div class="squad-label o">Portfolio Squad · reviews the book</div>
+        <div class="ag-row"><div class="ag-ic o">🛡</div><div><div class="ag-name">Risk &amp; Guideline Agent</div><div class="ag-desc">Predicts IMA and limit breaches before they happen</div></div></div>
+        <div class="ag-row"><div class="ag-ic o">📈</div><div><div class="ag-name">Technical Signals Agent</div><div class="ag-desc">Stops, momentum, RSI and volume anomalies</div></div></div>
+        <div class="ag-row"><div class="ag-ic o">⚖︎</div><div><div class="ag-name">PnL Attribution Agent</div><div class="ag-desc">Where PnL comes from — and what to trim</div></div></div>
+        <div class="ag-row"><div class="ag-ic o">📝</div><div><div class="ag-name">IR &amp; Reporting Agent</div><div class="ag-desc">Compliant tear sheets, letters and DDQs</div></div></div>
+        <div class="ag-row"><div class="ag-ic o">📰</div><div><div class="ag-name">Position Intelligence Agent</div><div class="ag-desc">News, sentiment and catalysts per holding</div></div></div>
+      </div>
+      <div class="reveal">
+        <div class="squad-label g">Market Squad · finds and validates ideas</div>
+        <div class="ag-row"><div class="ag-ic g">🔍</div><div><div class="ag-name">Research &amp; Alpha Agent</div><div class="ag-desc">AI + quant ranking and trading ranges</div></div></div>
+        <div class="ag-row"><div class="ag-ic g">≋</div><div><div class="ag-name">Fund Flows &amp; Positioning Agent</div><div class="ag-desc">Who is buying, selling and crowding</div></div></div>
+        <div class="ag-row"><div class="ag-ic g">💬</div><div><div class="ag-name">Earnings &amp; Sentiment Agent</div><div class="ag-desc">What management and the market say</div></div></div>
+        <div class="ag-row"><div class="ag-ic g">🌍</div><div><div class="ag-name">Macro &amp; Regime Agent</div><div class="ag-desc">Regime shifts mapped to your book</div></div></div>
+        <div class="ag-row"><div class="ag-ic g">◉</div><div><div class="ag-name">Digital Assets &amp; Tokenization</div><div class="ag-desc">Crypto catalysts and tokenized-stock basis</div></div></div>
+      </div>
+    </div>
+    <div class="conductor-strip reveal">
+      <div class="cs-brain"><svg viewBox="0 0 32 32"><path fill="#fff" d="M16 3C10 3 6 8 6 14c0 4 2 7 5 9v3c0 1 .5 2 2 2h6c1.5 0 2-1 2-2v-3c3-2 5-5 5-9 0-6-5-11-10-11Zm-1 3h2v18h-2V6Z"/></svg></div>
+      <div>
+        <div class="cs-title">Point Conductor</div>
+        <div class="cs-desc">Orchestrates, de-duplicates and ranks by <b>$ at risk</b> on one shared Portfolio Knowledge Graph.</div>
+        <div class="outputs">
+          <span class="out-chip">Morning Brief</span>
+          <span class="out-chip">Real-time Action Cards</span>
+          <span class="out-chip">Pre-trade what-ifs</span>
+          <span class="out-chip">LP-ready reports</span>
+          <span class="out-chip">Chat in Teams, Slack &amp; web</span>
+          <span class="out-chip">Point MCP for any LLM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="blk" id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">How the agents work together</div>
+      <h2>Ten agents run in parallel and hand off to each other.</h2>
+    </div>
+    <div class="vision">
+      <div class="v-card reveal"><div class="v-bolt">⚡</div><div class="v-to">Event-driven</div><div class="v-desc">Each agent subscribes to the events it cares about — a price gap, a filing, a CPI print.</div></div>
+      <div class="v-card reveal"><div class="v-bolt">⤲</div><div class="v-to">Cross-agent triggers</div><div class="v-desc">A macro regime shift automatically reruns risk, PnL and flows on the live book.</div></div>
+      <div class="v-card reveal"><div class="v-bolt">⛁</div><div class="v-to">One knowledge graph</div><div class="v-desc">Positions, limits, theses, exposures and entities shared by every agent.</div></div>
+      <div class="v-card reveal"><div class="v-bolt">◎</div><div class="v-to">Fewer, better alerts</div><div class="v-desc">Prioritized by dollars at risk and limit headroom — built against alert fatigue.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITY 1 -->
+<section class="blk" id="capabilities" style="background:var(--bg-2);border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Signature capability #1</div>
+      <h2>Predictive Guideline Engine: decisions before the breach.</h2>
+    </div>
+    <div class="cap">
+      <div class="reveal">
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div><div class="step-h">Codify</div><div class="step-d">AI reads IMAs, PPMs, side letters and risk policy into machine-checkable rules — signed off by compliance.</div></div></div>
+          <div class="step"><div class="step-n">2</div><div><div class="step-h">Model</div><div class="step-d">Live book + pending orders + market scenarios, re-computed on every relevant event.</div></div></div>
+          <div class="step"><div class="step-n">3</div><div><div class="step-h">Predict</div><div class="step-d">Probability that each limit is breached in 1, 3 and 5 days, with the drivers.</div></div></div>
+          <div class="step"><div class="step-n">4</div><div><div class="step-h">Prescribe</div><div class="step-d">The smallest set of trades or hedges that restores headroom, ranked by cost and alpha impact.</div></div></div>
+          <div class="step"><div class="step-n">5</div><div><div class="step-h">Prove</div><div class="step-d">Approval, rationale and a timestamped audit trail for compliance, LPs and regulators.</div></div></div>
+        </div>
+      </div>
+      <div class="cap-visual reveal">
+        <div class="mockcard">
+          <div class="mc-head"><span class="mc-crit">CRITICAL</span><span class="mc-meta">Action Card · Risk &amp; Guideline Agent</span></div>
+          <div class="mc-title">Beta-adjusted net projected at 63.1% vs. 60% IMA limit at Monday's open</div>
+          <div class="mc-metrics">
+            <div class="mc-m"><div class="mc-v orange">71%</div><div class="mc-l">Breach probability · 1d</div></div>
+            <div class="mc-m"><div class="mc-v" style="color:var(--good)">9%</div><div class="mc-l">After recommended trades</div></div>
+            <div class="mc-m"><div class="mc-v">6 bps</div><div class="mc-l">Estimated alpha cost</div></div>
+          </div>
+          <div class="mc-body"><b>Drivers:</b> semis beta drift; tokenized-equity weekend move −2.8%; hot CPI risk.<br/><b>Recommended:</b> Trim NVDA 12% (~$8.4M); buy SMH Nov put spread.</div>
+          <div class="mc-foot"><button class="mc-btn app">Approve</button><button class="mc-btn mod">Modify</button><button class="mc-btn dis">Dismiss</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITY 2 -->
+<section class="blk">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Signature capability #2</div>
+      <h2>First to watch the new 24/7 market for US stocks.</h2>
+      <p>SEC's 2026 framework lets tokenized-securities venues trade tokenized NMS stocks. Point monitors the basis, the weekend gap-risk, and liquidity — before the Monday open.</p>
+    </div>
+    <div class="cap rev">
+      <div class="reveal">
+        <div class="feat-row" style="grid-template-columns:1fr;margin-top:0">
+          <div class="feat"><h4>Basis monitor</h4><p>Premium / discount of each tokenized stock vs. its primary listing, by venue.</p></div>
+          <div class="feat"><h4>Gap-risk signal</h4><p>Weekend and overnight moves mapped to the book before the opening bell.</p></div>
+          <div class="feat"><h4>Liquidity &amp; arbitrage screen</h4><p>Depth, spreads and redemption friction — for funds with digital-asset mandates.</p></div>
+        </div>
+      </div>
+      <div class="cap-visual reveal">
+        <div class="tok-card">
+          <div style="font-family:var(--serif);font-size:16px;margin-bottom:4px">Weekend price discovery</div>
+          <div style="font-size:12px;color:var(--txt-3);margin-bottom:14px">Illustrative: tokenized AAPL before the Monday open</div>
+          <svg viewBox="0 0 500 220" class="chart" id="tok-chart"></svg>
+          <div class="legend-inline">
+            <span><i style="background:#5c564c"></i>Primary listing (Fri close)</span>
+            <span><i style="background:var(--gold)"></i>Tokenized (24/7)</span>
+            <span style="margin-left:auto">Monday open: <b class="orange">−1.9%</b></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT FAMILY -->
+<section class="blk" id="family" style="background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Product Family</div>
+      <h2>One engine, three ways to deploy Point.</h2>
+    </div>
+    <div class="family">
+      <div class="fam reveal">
+        <div class="fam-ic o">⌾</div>
+        <h3>Point Platform</h3>
+        <span class="tag">The full agent team</span>
+        <p>Ten agents and the Point Conductor, with Morning Brief, Action Cards and what-ifs in web, Teams and Slack.</p>
+        <div class="kv"><b>For:</b> Heads of Risk, PMs, CIOs, IR</div>
+        <div class="kv"><b>Model:</b> Annual subscription by squad</div>
+      </div>
+      <div class="fam reveal">
+        <div class="fam-ic g">🔌</div>
+        <h3>Point MCP</h3>
+        <span class="tag">Our agents inside any LLM</span>
+        <p>Point's predictions, what-ifs and alerts as tools in Claude, ChatGPT, Copilot, Gemini or in-house agents — no Point screen required.</p>
+        <div class="kv"><b>For:</b> AI-first teams, quants, smaller funds</div>
+        <div class="kv"><b>Model:</b> Lower-cost entry; upgrade path to Platform</div>
+      </div>
+      <div class="fam reveal">
+        <div class="fam-ic d">⚡</div>
+        <h3>Point Execute</h3>
+        <span class="tag">Real-time, rules-based execution</span>
+        <p>1-minute signals and client-approved rules executed through the client's own broker, behind hard risk limits and a kill switch.</p>
+        <div class="kv"><b>For:</b> Trading desks, intraday strategies</div>
+        <div class="kv"><b>Model:</b> Build fee + annual licence; live today</div>
+      </div>
+    </div>
+    <div class="shared reveal"><b>Shared engine:</b> Portfolio Knowledge Graph · deterministic Quant engine · Point Conductor · governance, entitlements and audit trail</div>
+  </div>
+</section>
+
+<!-- MCP -->
+<section class="blk" id="mcp">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Point MCP</div>
+      <h2>Our agents inside any LLM.</h2>
+      <p>Others expose <i>data</i> via MCP. Point exposes <b>predictions and actions</b> — ask Point inside the AI tools your team already uses.</p>
+    </div>
+    <div class="mcp reveal">
+      <div class="mcp-tool"><code>get_morning_brief</code><span>Ranked overnight risks and opportunities</span></div>
+      <div class="mcp-tool"><code>forecast_breaches</code><span>IMA / limit breach probabilities, 1–5 days</span></div>
+      <div class="mcp-tool"><code>run_what_if</code><span>Impact of proposed trades on risk and limits</span></div>
+      <div class="mcp-tool"><code>explain_pnl</code><span>Attribution by name, sector, strategy, period</span></div>
+      <div class="mcp-tool"><code>position_intel</code><span>News, sentiment, catalysts for a holding</span></div>
+      <div class="mcp-tool"><code>rank_universe</code><span>AI + quant ranking and trading ranges</span></div>
+      <div class="mcp-tool"><code>crowding_score</code><span>Fund-flow and crowding risk for a ticker</span></div>
+      <div class="mcp-tool"><code>tokenized_basis</code><span>Token vs. primary-listing premium</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- REQUEST A DEMO -->
+<section class="blk" id="demo" style="background:var(--bg-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap demo-grid">
+    <div class="reveal">
+      <div class="eyebrow">Request a demo</div>
+      <h2 style="font-size:40px;line-height:1.1;margin-top:12px">See Point on your book.</h2>
+      <p style="font-size:16px;color:var(--txt-2);line-height:1.6;margin-top:16px;max-width:460px">A 30-minute walkthrough with the founding team. We'll run the ten agents against a representative book and show the Morning Brief, Action Cards and pre-trade what-ifs live.</p>
+      <ul class="demo-list">
+        <li><span class="dchk">✓</span> Predictive guideline &amp; breach forecasting on your limits</li>
+        <li><span class="dchk">✓</span> 24/7 tokenized-equity &amp; crypto monitoring</li>
+        <li><span class="dchk">✓</span> Point MCP inside Claude, ChatGPT or your in-house agents</li>
+        <li><span class="dchk">✓</span> Deployment options: Platform · MCP · Execute</li>
+      </ul>
+      <div class="demo-contact">
+        <span>Prefer email?</span> <a href="mailto:hello@pointagentic.com">hello@pointagentic.com</a>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <form class="demo-card" id="demo-form" novalidate>
+        <div class="df-row">
+          <label>Full name
+            <input type="text" name="name" placeholder="Umabharathi M." required/>
+          </label>
+          <label>Work email
+            <input type="email" name="email" placeholder="you@fund.com" required/>
+          </label>
+        </div>
+        <div class="df-row">
+          <label>Firm
+            <input type="text" name="firm" placeholder="GoldenHills Capital" required/>
+          </label>
+          <label>Role
+            <select name="role">
+              <option value="">Select…</option>
+              <option>CIO / Portfolio Manager</option>
+              <option>Head of Risk</option>
+              <option>Investor Relations</option>
+              <option>Quant / Engineering</option>
+              <option>Trading / Execution</option>
+              <option>Other</option>
+            </select>
+          </label>
+        </div>
+        <div class="df-row">
+          <label>Strategy
+            <select name="strategy">
+              <option value="">Select…</option>
+              <option>Equity long/short</option>
+              <option>Multi-strategy</option>
+              <option>Market neutral</option>
+              <option>Global macro</option>
+              <option>Digital assets</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>AUM
+            <select name="aum">
+              <option value="">Select…</option>
+              <option>&lt; $100M</option>
+              <option>$100M – $500M</option>
+              <option>$500M – $2B</option>
+              <option>&gt; $2B</option>
+            </select>
+          </label>
+        </div>
+        <label>Interested in
+          <div class="df-chips" id="df-chips">
+            <span class="df-chip" data-v="Platform">Point Platform</span>
+            <span class="df-chip" data-v="MCP">Point MCP</span>
+            <span class="df-chip" data-v="Execute">Point Execute</span>
+          </div>
+        </label>
+        <label>Anything specific?
+          <textarea name="notes" rows="3" placeholder="Limits we worry about, tokenized mandate, current stack…"></textarea>
+        </label>
+        <button type="submit" class="btn primary lg" style="width:100%;justify-content:center">Request a demo →</button>
+        <div class="df-note">Strictly confidential · client data is never used for training.</div>
+        <div class="df-success" id="df-success">
+          <div class="dfs-check">✓</div>
+          <div><b>Request received.</b><div style="font-size:13px;color:var(--txt-2);margin-top:3px">Thanks — the founding team will reach out within one business day.</div></div>
+        </div>
+        <div class="df-error" id="df-error">Something went wrong sending your request. Please try again, or email <a href="mailto:hello@pointagentic.com">hello@pointagentic.com</a>.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="glow" style="left:50%;top:40%"></div>
+  <div class="wrap" style="position:relative">
+    <div class="eyebrow reveal">Point: the agentic decision layer for the front office</div>
+    <h2 class="reveal" style="margin-top:14px">Ten agents. One view of the book.<br/>Decisions before the breach.</h2>
+    <p class="reveal">Explore the full platform with a live, fully-populated demo book — Morning Brief, Action Cards, risk, PnL, research, and the 24/7 tokenized market.</p>
+    <div class="reveal" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="app.html" class="btn primary lg">Launch the Platform →</a>
+      <a href="#demo" class="btn ghost lg">Request a demo</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot-in">
+    <div class="logo"><span class="logo-mark"><svg viewBox="0 0 32 32" width="18" height="18"><path fill="#fff" d="M16 2C9 2 4 7 4 14c0 5 3 9 7 11v3c0 1 1 2 2 2h6c1 0 2-1 2-2v-3c4-2 7-6 7-11 0-7-5-12-12-12Zm-1 4h2v16h-2V6Z"/></svg></span><span class="logo-name">Point</span></div>
+    <div class="foot-links">
+      <a href="#platform">Platform</a><a href="#family">Products</a><a href="#mcp">Point MCP</a><a href="#demo">Request a demo</a><a href="app.html">Launch app</a>
+    </div>
+    <div class="conf">© 2026 Point Agentic Solutions Inc.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* constellation nodes */
+  const icons=['🛡','📈','⚖︎','📝','📰','🔍','≋','💬','🌍','◉'];
+  const types=['o','o','o','o','o','g','g','g','g','g'];
+  const host=document.getElementById('constellation');
+  const R=46; // % radius
+  icons.forEach((ic,i)=>{
+    const ang=(i/icons.length)*2*Math.PI - Math.PI/2;
+    const x=50+Math.cos(ang)*R, y=50+Math.sin(ang)*R;
+    const spoke=document.createElement('div');
+    spoke.className='spoke';
+    const len=R; // percent-ish; use px via width on half container — approximate with CSS
+    spoke.style.width='46%';
+    spoke.style.transform='rotate('+(ang*180/Math.PI)+'deg)';
+    host.appendChild(spoke);
+    const n=document.createElement('div');
+    n.className='node '+types[i];
+    n.style.left=x+'%'; n.style.top=y+'%';
+    n.textContent=ic;
+    n.style.transitionDelay=(i*0.04)+'s';
+    host.appendChild(n);
+  });
+
+  /* line chart */
+  function lineChart(id,series,labels){
+    const svg=document.getElementById(id); if(!svg) return;
+    const W=500,H=220,pad=28,top=14,bot=H-26;
+    const all=series.flatMap(s=>s.data); const min=Math.min(...all),max=Math.max(...all);
+    const n=series[0].data.length;
+    const x=i=>pad+i*(W-pad*2)/(n-1), y=v=>top+(max-v)/(max-min)*(bot-top);
+    let out='';
+    for(let g=0;g<=4;g++){const yy=top+g*(bot-top)/4;out+='<line x1="'+pad+'" y1="'+yy+'" x2="'+(W-pad)+'" y2="'+yy+'" stroke="#2c2621" stroke-width="1"/>';}
+    series.forEach(s=>{
+      let d=''; s.data.forEach((v,i)=>d+=(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)+' ');
+      out+='<path d="'+d+'" fill="none" stroke="'+s.color+'" stroke-width="'+(s.w||2.5)+'" stroke-linejoin="round" stroke-linecap="round" '+(s.dash?'stroke-dasharray="'+s.dash+'"':'')+'/>';
+      if(s.dots!==false) s.data.forEach((v,i)=>out+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="3" fill="'+s.color+'"/>');
+    });
+    labels.forEach((l,i)=>out+='<text x="'+x(i)+'" y="'+(H-8)+'" fill="#8a7e6e" font-size="9" text-anchor="middle" font-family="Inter">'+l+'</text>');
+    svg.innerHTML=out;
+  }
+  lineChart('tok-chart',[
+    {data:[235.8,235.8,235.8,235.8,235.8,235.8,235.8,235.8],color:'#5c564c',w:1.5,dash:'4 4',dots:false},
+    {data:[235.8,235.4,234.1,233.2,232.6,231.0,231.2,231.4],color:'#d4a42b'}
+  ],['Fri 2p','Fri 4p','Fri 8p','Sat','Sun AM','Sun PM','Mon 6a','Mon 9:30']);
+
+  /* scroll reveal */
+  const revs=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+    revs.forEach(el=>io.observe(el));
+    /* safety: anything still hidden after 2.5s reveals anyway */
+    setTimeout(()=>revs.forEach(el=>el.classList.add('in')),2500);
+  } else {
+    revs.forEach(el=>el.classList.add('in'));
+  }
+
+  /* nav shadow on scroll */
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>{nav.style.boxShadow=scrollY>20?'0 10px 30px -20px rgba(0,0,0,.8)':'none';});
+
+  /* demo form */
+  const chips=document.getElementById('df-chips');
+  if(chips) chips.querySelectorAll('.df-chip').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('on')));
+  const form=document.getElementById('demo-form');
+  // ── Replace with your own Formspree form ID (formspree.io → New Form) ──
+  const FORMSPREE_ENDPOINT='https://formspree.io/f/your_form_id';
+  if(form) form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    if(!form.checkValidity()){ form.reportValidity(); return; }
+    const btn=form.querySelector('button[type=submit]');
+    const ok=document.getElementById('df-success');
+    const err=document.getElementById('df-error');
+    const val=n=>{const el=form.elements[n];return el&&el.value?el.value.trim():'';};
+    const interests=[...form.querySelectorAll('.df-chip.on')].map(c=>c.dataset.v).join(', ')||'Not specified';
+    const payload={
+      name:val('name'), email:val('email'), firm:val('firm'),
+      role:val('role')||'—', strategy:val('strategy')||'—', aum:val('aum')||'—',
+      interested_in:interests, notes:val('notes')||'—',
+      _subject:'Point demo request — '+(val('firm')||val('name')||'New lead')
+    };
+    if(err) err.classList.remove('show');
+    btn.textContent='Sending…'; btn.disabled=true;
+    function reveal(){
+      form.querySelectorAll('input,select,textarea').forEach(el=>el.style.display='none');
+      form.querySelectorAll('label').forEach(l=>l.style.display='none');
+      btn.style.display='none';
+      const note=form.querySelector('.df-note'); if(note) note.style.display='none';
+      if(ok) ok.classList.add('show');
+    }
+    try{
+      if(FORMSPREE_ENDPOINT.includes('your_form_id')){
+        // demo mode — no endpoint configured yet
+        await new Promise(r=>setTimeout(r,500));
+        reveal(); return;
+      }
+      const res=await fetch(FORMSPREE_ENDPOINT,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      if(res.ok){ reveal(); }
+      else{ throw new Error('bad status '+res.status); }
+    }catch(ex){
+      btn.textContent='Request a demo →'; btn.disabled=false;
+      if(err) err.classList.add('show');
+    }
+  });
+
+  /* theme toggle */
+  const tb=document.getElementById('theme-btn');
+  function apply(t){
+    document.body.setAttribute('data-theme',t);
+    const m=document.querySelector('.ic-moon'),s=document.querySelector('.ic-sun');
+    if(m)m.style.display=t==='light'?'none':''; if(s)s.style.display=t==='light'?'':'none';
+  }
+  let saved='dark'; try{saved=localStorage.getItem('point-theme')||'dark';}catch(e){}
+  apply(saved);
+  if(tb)tb.addEventListener('click',()=>{const nx=document.body.getAttribute('data-theme')==='light'?'dark':'light';apply(nx);try{localStorage.setItem('point-theme',nx);}catch(e){}});
+})();
+</script>
+
+<style>
+/* light theme for landing */
+body[data-theme="light"]{
+  --bg:#f5f0e6;--bg-2:#efe8da;--panel:#fffdf8;--panel-2:#f2ebdc;
+  --line:#e4dac8;--line-2:#d3c6b0;--txt:#2a211a;--txt-2:#6a5e4e;--txt-3:#978a78;
+  --orange:#d9532f;--orange-2:#c7421f;--gold:#b88a17;--gold-2:#9a7410;--good:#3f9a53;
+}
+body[data-theme="light"] .nav{background:rgba(245,240,230,.8)}
+body[data-theme="light"] .c-center svg path,
+body[data-theme="light"] .cs-brain{filter:none}
+body[data-theme="light"] .fam-ic.d,
+body[data-theme="light"] .conductor-strip,
+body[data-theme="light"] .tok-card{background:#201c18;border-color:#3d342a;color:var(--cream)}
+body[data-theme="light"] .tok-card div,
+body[data-theme="light"] .conductor-strip .cs-title{color:#f3ece1}
+body[data-theme="light"] .conductor-strip .cs-desc,
+body[data-theme="light"] .legend-inline{color:#b9ad9c}
+body[data-theme="light"] .out-chip{background:#262019;border-color:#3d342a;color:#b9ad9c}
+</style>
+</body>
+</html>
