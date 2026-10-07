@@ -523,6 +523,94 @@
     }
   });
 
+  /* ---- fund switcher ---- */
+  const funds = [
+    {id:'alpha', name:'Alpha Fund', sub:'Equity L/S · flagship', color:'#e8603b', init:'AL',
+     aum:'$1.248 B', aumD:'+$6.1M · 24h', pnl:'+34 bps', pnlUp:true, pnlD:'$ 4.24 M · vs. $2.1M bench',
+     exp:'184% / 62%', expD:'Net ↑ 3.1pts since Fri close', var:'$ 14.3 M', varD:'1.15% of NAV',
+     cards:'7 action cards', crit:'2 critical'},
+    {id:'global', name:'Global Macro Fund', sub:'Macro · multi-asset', color:'#d4a42b', init:'GM',
+     aum:'$842.0 M', aumD:'−$2.3M · 24h', pnl:'−12 bps', pnlUp:false, pnlD:'−$ 1.01 M · vs. +$0.4M bench',
+     exp:'142% / 38%', expD:'Net flat since Fri close', var:'$ 9.8 M', varD:'1.16% of NAV',
+     cards:'4 action cards', crit:'1 critical'},
+    {id:'neutral', name:'Market Neutral Fund', sub:'Equity MN · low beta', color:'#58b06a', init:'MN',
+     aum:'$1.560 B', aumD:'+$1.2M · 24h', pnl:'+9 bps', pnlUp:true, pnlD:'$ 1.40 M · vs. $0.2M bench',
+     exp:'210% / 4%', expD:'Net 4% · within band', var:'$ 6.1 M', varD:'0.39% of NAV',
+     cards:'3 action cards', crit:'0 critical'},
+    {id:'digital', name:'Digital Assets Fund', sub:'Crypto + tokenized', color:'#6c7bf0', init:'DA',
+     aum:'$318.4 M', aumD:'−$8.9M · 24h', pnl:'−2.1%', pnlUp:false, pnlD:'−$ 6.80 M · 24/7 book',
+     exp:'96% / 71%', expD:'Net ↑ 6pts on BTC drift', var:'$ 11.2 M', varD:'3.52% of NAV',
+     cards:'5 action cards', crit:'2 critical'}
+  ];
+  const fundSwitch=document.getElementById('fund-switch');
+  const fundMenu=document.getElementById('fund-menu');
+  const fundBtnName=document.getElementById('fund-btn-name');
+  let activeFund='alpha';
+  const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+
+  function renderFundMenu(){
+    if(!fundMenu) return;
+    fundMenu.innerHTML='<div class="fund-menu-h">Switch fund · 4</div>'+
+      funds.map(f=>`<div class="fund-opt ${f.id===activeFund?'active':''}" data-fund="${f.id}">
+        <span class="fund-ic" style="background:${f.color}">${f.init}</span>
+        <div><div class="fo-name">${f.name}</div><div class="fo-sub">${f.sub}</div></div>
+        ${f.id===activeFund?'<span class="fo-check">✓</span>':`<span class="fo-aum">${f.aum}</span>`}
+      </div>`).join('')+
+      '<div class="fund-menu-foot"><a>+ Add or manage funds</a></div>';
+    fundMenu.querySelectorAll('.fund-opt').forEach(o=>o.addEventListener('click',()=>{
+      selectFund(o.dataset.fund); fundSwitch.classList.remove('open');
+    }));
+  }
+  function selectFund(id){
+    const f=funds.find(x=>x.id===id); if(!f) return;
+    activeFund=id;
+    if(fundBtnName) fundBtnName.textContent=f.name;
+    setText('hero-fund', f.name.replace(/ Fund$/,''));
+    setText('hero-cards', f.cards);
+    setText('hero-crit', f.crit);
+    setText('kpi-aum', f.aum); setText('kpi-aum-d', f.aumD);
+    setText('kpi-pnl', f.pnl); setText('kpi-pnl-d', f.pnlD);
+    setText('kpi-exp', f.exp); setText('kpi-exp-d', f.expD);
+    setText('kpi-var', f.var); setText('kpi-var-d', f.varD);
+    const pnlEl=document.getElementById('kpi-pnl');
+    if(pnlEl){ pnlEl.classList.toggle('up',f.pnlUp); pnlEl.classList.toggle('dn',!f.pnlUp); }
+    const aumD=document.getElementById('kpi-aum-d');
+    if(aumD){ const up=!f.aumD.includes('−'); aumD.classList.toggle('up',up); aumD.classList.toggle('dn',!up); }
+    const critEl=document.getElementById('hero-crit');
+    if(critEl) critEl.style.color = f.crit.startsWith('0') ? 'var(--good)' : '';
+    const dot=document.querySelector('.fund-dot'); if(dot) dot.style.background=f.color;
+    try{ localStorage.setItem('point-fund', id); }catch(e){}
+    renderFundMenu();
+  }
+  renderFundMenu();
+  try{ const sf=localStorage.getItem('point-fund'); if(sf && funds.find(x=>x.id===sf)) selectFund(sf); }catch(e){}
+  if(document.getElementById('fund-btn')){
+    document.getElementById('fund-btn').addEventListener('click',e=>{
+      e.stopPropagation();
+      document.getElementById('profile')?.classList.remove('open');
+      fundSwitch.classList.toggle('open');
+    });
+  }
+
+  /* ---- profile menu ---- */
+  const profile=document.getElementById('profile');
+  const profileBtn=document.getElementById('profile-btn');
+  if(profileBtn){
+    profileBtn.addEventListener('click',e=>{
+      e.stopPropagation();
+      fundSwitch?.classList.remove('open');
+      profile.classList.toggle('open');
+    });
+    profile.querySelectorAll('.pm-item').forEach(it=>it.addEventListener('click',()=>{
+      const label=it.textContent.trim();
+      if(label==='Manage funds'){ profile.classList.remove('open'); fundSwitch?.classList.add('open'); }
+      else { profile.classList.remove('open'); }
+    }));
+  }
+  /* close popovers on outside click / Esc */
+  document.addEventListener('click',()=>{ fundSwitch?.classList.remove('open'); profile?.classList.remove('open'); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ fundSwitch?.classList.remove('open'); profile?.classList.remove('open'); } });
+
   /* ---- theme toggle ---- */
   const themeBtn = document.getElementById('theme-btn');
   function applyTheme(t){

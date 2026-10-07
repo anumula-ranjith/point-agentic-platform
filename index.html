@@ -93,10 +93,21 @@
         <span class="sep">/</span>
         <span class="crumb current" id="crumb-view">Dashboard</span>
       </div>
+
+      <!-- Fund switcher -->
+      <div class="fund-switch" id="fund-switch">
+        <button class="fund-btn" id="fund-btn">
+          <span class="fund-dot"></span>
+          <span class="fund-name" id="fund-btn-name">Alpha Fund</span>
+          <svg class="fund-caret" viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="m7 10 5 5 5-5z"/></svg>
+        </button>
+        <div class="fund-menu" id="fund-menu"><!-- populated by JS --></div>
+      </div>
+
       <div class="top-tools">
         <label class="search">
           <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M10 2a8 8 0 1 1-5 14.3l-3.3 3.3-1.4-1.4 3.3-3.3A8 8 0 0 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"/></svg>
-          <input placeholder="Ask Point:  'what moved NVDA last week?'  ·  'draft a tear sheet for Alpha fund'" />
+          <input placeholder="Ask Point:  'what moved NVDA last week?'  ·  'draft a tear sheet'" />
           <span class="kbd">⌘K</span>
         </label>
         <button class="icon-btn" title="Notifications">
@@ -107,7 +118,31 @@
           <svg class="ic-moon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
           <svg class="ic-sun" viewBox="0 0 24 24" width="18" height="18" style="display:none"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-5v3m0 14v3M4.2 4.2l2.1 2.1m11.4 11.4 2.1 2.1M2 12h3m14 0h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
-        <div class="status-pill"><span class="live"></span>Live · All agents green</div>
+
+        <!-- Profile menu -->
+        <div class="profile" id="profile">
+          <button class="profile-btn" id="profile-btn">
+            <span class="avatar sm">AD</span>
+            <span class="profile-name">Admin</span>
+            <svg viewBox="0 0 24 24" width="13" height="13"><path fill="currentColor" d="m7 10 5 5 5-5z"/></svg>
+          </button>
+          <div class="profile-menu" id="profile-menu">
+            <div class="pm-head">
+              <span class="avatar">AD</span>
+              <div>
+                <div class="pm-name">Admin</div>
+                <div class="pm-mail">admin@goldenhillsindia.com</div>
+              </div>
+            </div>
+            <div class="pm-role"><span>Role</span><b>CIO · Full access</b></div>
+            <div class="pm-sep"></div>
+            <a class="pm-item"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5 0-9 2.5-9 6v2h18v-2c0-3.5-4-6-9-6Z"/></svg>My profile</a>
+            <a class="pm-item"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm9 4-2 .4-.5 1.3 1.1 1.7-1.5 1.5-1.7-1.1-1.3.5L14 20h-4l-.4-2-1.3-.5-1.7 1.1-1.5-1.5 1.1-1.7-.5-1.3L4 12l2-.4.5-1.3L5.4 8.6 6.9 7l1.7 1.1 1.3-.5L10 4h4l.4 2 1.3.5L17.4 5.4 18.9 7l-1.1 1.7.5 1.3L21 12Z"/></svg>Account settings</a>
+            <a class="pm-item"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M4 4h16v4H4V4Zm0 6h16v4H4v-4Zm0 6h16v4H4v-4Z"/></svg>Manage funds</a>
+            <div class="pm-sep"></div>
+            <a class="pm-item danger"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M10 2h4v10h-4V2Zm2 20a9 9 0 0 1-5-16.5l1.2 1.6a7 7 0 1 0 7.6 0l1.2-1.6A9 9 0 0 1 12 22Z"/></svg>Sign out</a>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -116,7 +151,7 @@
       <div class="hero">
         <div>
           <div class="eyebrow">Monday · October 7, 2026 · 06:12 ET</div>
-          <h1 class="h1">Good morning, Admin.<br/><span class="muted">You have <b class="orange">7 action cards</b>, <b class="orange">2 critical</b>, overnight on the Alpha fund.</span></h1>
+          <h1 class="h1">Good morning, Admin.<br/><span class="muted">You have <b class="orange" id="hero-cards">7 action cards</b>, <b class="orange" id="hero-crit">2 critical</b>, overnight on the <b id="hero-fund">Alpha</b> fund.</span></h1>
           <div class="hero-actions">
             <button class="btn primary">Open Morning Brief</button>
             <button class="btn ghost">Ask Point ↗</button>
@@ -125,23 +160,23 @@
         <div class="hero-stats">
           <div class="stat">
             <div class="stat-label">AUM</div>
-            <div class="stat-val">$1.248 B</div>
-            <div class="stat-delta up">+$6.1M · 24h</div>
+            <div class="stat-val" id="kpi-aum">$1.248 B</div>
+            <div class="stat-delta up" id="kpi-aum-d">+$6.1M · 24h</div>
           </div>
           <div class="stat">
             <div class="stat-label">Day PnL</div>
-            <div class="stat-val up">+34 bps</div>
-            <div class="stat-delta">$ 4.24 M · vs. $2.1M bench</div>
+            <div class="stat-val up" id="kpi-pnl">+34 bps</div>
+            <div class="stat-delta" id="kpi-pnl-d">$ 4.24 M · vs. $2.1M bench</div>
           </div>
           <div class="stat">
             <div class="stat-label">Gross / Net</div>
-            <div class="stat-val">184% / 62%</div>
-            <div class="stat-delta warn">Net ↑ 3.1pts since Fri close</div>
+            <div class="stat-val" id="kpi-exp">184% / 62%</div>
+            <div class="stat-delta warn" id="kpi-exp-d">Net ↑ 3.1pts since Fri close</div>
           </div>
           <div class="stat">
             <div class="stat-label">1-day VaR 99%</div>
-            <div class="stat-val">$ 14.3 M</div>
-            <div class="stat-delta">1.15% of NAV</div>
+            <div class="stat-val" id="kpi-var">$ 14.3 M</div>
+            <div class="stat-delta" id="kpi-var-d">1.15% of NAV</div>
           </div>
         </div>
       </div>
