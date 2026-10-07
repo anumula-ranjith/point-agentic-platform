@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "point-dist",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["-y", "serve", "dist", "-l", "4178"],
+      "port": 4178
+    }
+  ]
+}
