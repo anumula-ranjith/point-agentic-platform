@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Point — Fund Intelligence Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --panel-2:#f9fafb; --ink:#101828; --ink-2:#344054;
+  --muted:#667085; --muted-2:#98a2b3; --line:#e4e7ec; --line-2:#d0d5dd;
+  --accent:#3157d5; --accent-weak:#eef2fe; --pos:#16855b; --pos-weak:#e8f5ef;
+  --warn:#d97706; --warn-weak:#fdf3e7; --crit:#c9362b; --crit-weak:#fcecea;
+  --sans:'Inter',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --r:6px; --r-lg:8px;
+  --sh:0 1px 2px rgba(16,24,40,.05); --sh-lg:0 8px 24px -8px rgba(16,24,40,.18);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.pos{color:var(--pos)}.neg{color:var(--crit)}.warnc{color:var(--warn)}.mut{color:var(--muted)}
+.mono{font-family:var(--mono)}
+::selection{background:var(--accent);color:#fff}
+
+/* shell */
+.app{display:flex;min-height:100vh}
+.side{width:216px;flex:none;background:var(--panel);border-right:1px solid var(--line);
+  position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:9px;padding:15px 16px;border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:7px;background:var(--ink);display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px}
+.brand b{font-size:15px;font-weight:700;letter-spacing:-.2px}
+.brand small{display:block;font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.3px}
+.nav{padding:8px;flex:1}
+.nav-lab{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted-2);font-weight:600;padding:12px 8px 5px}
+.nav a{display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:var(--r);color:var(--ink-2);
+  font-weight:500;font-size:13px;cursor:pointer;transition:.1s;margin-bottom:1px}
+.nav a:hover{background:var(--panel-2)}
+.nav a.on{background:var(--accent-weak);color:var(--accent);font-weight:600}
+.nav a .ic{width:17px;height:17px;flex:none;opacity:.8}
+.nav a.on .ic{opacity:1}
+.nav a .cnt{margin-left:auto;background:var(--crit);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+.side-foot{border-top:1px solid var(--line);padding:11px 12px}
+.role-pick{display:flex;align-items:center;gap:9px;cursor:pointer;border-radius:var(--r);padding:5px;transition:.1s}
+.role-pick:hover{background:var(--panel-2)}
+.rp-av{width:30px;height:30px;border-radius:7px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:600;font-size:12px}
+.rp-name{font-weight:600;font-size:12.5px}.rp-role{font-size:11px;color:var(--muted)}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* topbar */
+.top{display:flex;align-items:center;gap:14px;padding:0 20px;height:54px;background:var(--panel);
+  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.fundsel{position:relative}
+.fundsel-btn{display:flex;align-items:center;gap:10px;border:1px solid var(--line-2);border-radius:var(--r);
+  padding:6px 11px;background:var(--panel);cursor:pointer;font-family:var(--sans)}
+.fundsel-btn:hover{border-color:var(--muted-2)}
+.fs-ic{width:24px;height:24px;border-radius:6px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:11px}
+.fs-main{text-align:left}
+.fs-name{font-weight:600;font-size:13px;line-height:1.2}
+.fs-sub{font-size:10.5px;color:var(--muted)}
+.fs-caret{color:var(--muted-2);margin-left:4px}
+.fundsel-menu{position:absolute;top:calc(100% + 6px);left:0;width:320px;background:var(--panel);
+  border:1px solid var(--line-2);border-radius:var(--r-lg);box-shadow:var(--sh-lg);padding:6px;z-index:40;
+  opacity:0;transform:translateY(-5px);pointer-events:none;transition:.15s}
+.fundsel.open .fundsel-menu{opacity:1;transform:none;pointer-events:auto}
+.fundsel.open .fs-caret{transform:rotate(180deg)}
+.fund-opt{display:flex;align-items:center;gap:10px;padding:9px;border-radius:var(--r);cursor:pointer}
+.fund-opt:hover{background:var(--panel-2)}
+.fund-opt.on{background:var(--accent-weak)}
+.fund-opt .fo-aum{margin-left:auto;text-align:right;font-size:12px;font-weight:600}
+.fund-opt.on .fo-aum{color:var(--accent)}
+.asof{font-size:11.5px;color:var(--muted);line-height:1.35}
+.asof b{color:var(--ink-2);font-weight:600}
+.top-sp{flex:1}
+.ask-mini{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:var(--r);
+  padding:7px 11px;min-width:240px;color:var(--muted);cursor:text}
+.ask-mini input{border:none;outline:none;font-family:var(--sans);font-size:12.5px;flex:1;background:none;color:var(--ink)}
+.freshdot{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.fd{width:7px;height:7px;border-radius:50%;background:var(--pos)}
+.fd.live{background:var(--pos);box-shadow:0 0 0 3px var(--pos-weak);animation:pl 2s infinite}
+.fd.delay{background:var(--warn)}.fd.stale{background:var(--muted-2)}
+@keyframes pl{50%{opacity:.5}}
+.icon-btn{width:34px;height:34px;border-radius:var(--r);border:1px solid var(--line-2);background:var(--panel);
+  display:grid;place-items:center;cursor:pointer;color:var(--muted);position:relative}
+.icon-btn:hover{color:var(--ink);border-color:var(--muted-2)}
+.icon-btn .dot{position:absolute;top:7px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--crit)}
+
+/* views */
+.view{display:none;padding:18px 20px 40px;max-width:1680px;width:100%;margin:0 auto}
+.view.on{display:block}
+.pg-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}
+.pg-title{font-size:19px;font-weight:700;letter-spacing:-.3px}
+.pg-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* kpi strip */
+.kstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px}
+.kcell{background:var(--panel);padding:11px 14px}
+.klab{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600}
+.kval{font-size:18px;font-weight:700;margin-top:3px;letter-spacing:-.3px}
+.ksub{font-size:11px;margin-top:1px}
+
+.grid{display:grid;gap:14px}
+.g-3{grid-template-columns:1.1fr 1fr 1fr}
+.g-2{grid-template-columns:1fr 1fr}
+.g-2b{grid-template-columns:1.4fr 1fr}
+@media(max-width:1200px){.g-3,.g-2,.g-2b{grid-template-columns:1fr}.kstrip{grid-template-columns:repeat(4,1fr)}}
+
+/* card */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh);margin-bottom:14px}
+.card-h{display:flex;align-items:center;gap:10px;padding:12px 15px;border-bottom:1px solid var(--line)}
+.card-h h3{font-size:13.5px;font-weight:600;margin:0}
+.card-h .sp{flex:1}
+.card-b{padding:14px 15px}
+.card-b.flush{padding:0}
+.pill{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.pill.crit{background:var(--crit-weak);color:var(--crit)}
+.pill.warn{background:var(--warn-weak);color:var(--warn)}
+.pill.ok{background:var(--pos-weak);color:var(--pos)}
+.pill.info{background:var(--accent-weak);color:var(--accent)}
+.pill.neu{background:#f2f4f7;color:var(--muted)}
+.tag{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+
+/* health score */
+.health{display:flex;gap:18px;align-items:center;padding:4px 0 10px}
+.ring{position:relative;width:118px;height:118px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .rn{font-size:30px;font-weight:700;letter-spacing:-1px}
+.ring .rl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.health-meta{font-size:12px;color:var(--muted)}
+.health-meta b{color:var(--ink)}
+.hcomp{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.hc{background:var(--panel);padding:10px 14px;cursor:pointer;transition:.1s}
+.hc:hover{background:var(--panel-2)}
+.hc-top{display:flex;align-items:baseline;gap:7px}
+.hc-name{font-size:12px;font-weight:600}
+.hc-val{margin-left:auto;font-size:15px;font-weight:700}
+.hc-chg{font-size:11px;font-weight:600}
+.hc-bar{height:4px;border-radius:3px;background:var(--line);margin:6px 0 5px;overflow:hidden}
+.hc-fill{height:100%;border-radius:3px}
+.hc-why{font-size:10.5px;color:var(--muted);line-height:1.4}
+
+/* what changed */
+.wc-cat{border-bottom:1px solid var(--line);padding:11px 15px}
+.wc-cat:last-child{border:none}
+.wc-h{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;margin-bottom:8px}
+.wc-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12.5px;cursor:pointer;border-radius:4px}
+.wc-row:hover{background:var(--panel-2)}
+.wc-row .lab{color:var(--ink-2)}
+.wc-row .chg{margin-left:auto;font-weight:600;font-family:var(--mono);font-size:12px}
+.wc-arrow{color:var(--muted-2);margin:0 2px}
+
+/* action cards */
+.acard{border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:.12s;background:var(--panel)}
+.acard:hover{border-color:var(--line-2);box-shadow:var(--sh-lg)}
+.acard.crit{border-left:3px solid var(--crit)}
+.acard.warn{border-left:3px solid var(--warn)}
+.acard.opp{border-left:3px solid var(--accent)}
+.ac-h{display:flex;align-items:center;gap:9px;padding:11px 14px 0}
+.ac-ttl{font-size:13.5px;font-weight:600;padding:7px 14px 3px;line-height:1.35}
+.ac-m{display:flex;gap:20px;padding:4px 14px 10px;flex-wrap:wrap}
+.ac-mi .v{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.ac-mi .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.ac-foot{display:flex;align-items:center;gap:7px;padding:9px 14px;border-top:1px solid var(--line);background:var(--panel-2)}
+.btn{font-family:var(--sans);font-weight:600;font-size:12px;border-radius:var(--r);padding:6px 12px;border:1px solid transparent;cursor:pointer;transition:.1s}
+.btn.pri{background:var(--accent);color:#fff}.btn.pri:hover{background:#274bc0}
+.btn.gh{background:var(--panel);border-color:var(--line-2);color:var(--ink-2)}.btn.gh:hover{border-color:var(--muted-2)}
+.btn.sm{padding:4px 9px;font-size:11px}
+.ac-foot .meta{margin-left:auto;font-size:10.5px;color:var(--muted)}
+
+/* tables */
+.tbl-wrap{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:12px}
+table.t thead th{position:sticky;top:0;background:var(--panel-2);text-align:right;font-weight:600;color:var(--muted);
+  font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;padding:8px 10px;border-bottom:1px solid var(--line-2);white-space:nowrap;cursor:pointer;z-index:1}
+table.t thead th.l{text-align:left}
+table.t tbody td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+table.t tbody td.l{text-align:left}
+table.t tbody tr{cursor:pointer}
+table.t tbody tr:hover{background:var(--accent-weak)}
+.tk{font-weight:600}
+.co{color:var(--muted);font-size:11px}
+.side-l{color:var(--pos);font-weight:600;font-size:11px}
+.side-s{color:var(--crit);font-weight:600;font-size:11px}
+.minibar{display:inline-block;width:44px;height:6px;border-radius:3px;background:var(--line);vertical-align:middle;overflow:hidden;position:relative}
+.minibar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+
+/* filters */
+.filters{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.fchip{font-size:11.5px;font-weight:500;padding:5px 11px;border-radius:20px;border:1px solid var(--line-2);background:var(--panel);cursor:pointer;color:var(--ink-2)}
+.fchip:hover{border-color:var(--muted-2)}
+.fchip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.srch{border:1px solid var(--line-2);border-radius:var(--r);padding:6px 10px;font-size:12px;font-family:var(--sans);outline:none;min-width:160px}
+.srch:focus{border-color:var(--accent)}
+
+/* headroom / limit bars */
+.hr-bar{position:relative;height:8px;background:var(--line);border-radius:4px;overflow:hidden;min-width:120px}
+.hr-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.hr-mark{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--ink)}
+
+/* waterfall */
+.wf{display:flex;align-items:flex-end;gap:2px;height:150px;padding-top:10px}
+.wf-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:5px}
+.wf-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px}
+.wf-lab{font-size:9.5px;color:var(--muted);text-align:center;line-height:1.2}
+.wf-v{font-size:10px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* scatter */
+.scatter{position:relative;height:300px;border:1px solid var(--line);border-radius:var(--r);background:
+  linear-gradient(var(--panel-2) 0 0) no-repeat;margin-top:4px}
+.sc-q{position:absolute;font-size:10px;color:var(--muted-2);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.sc-axis{position:absolute;background:var(--line-2)}
+.sc-pt{position:absolute;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;border:1.5px solid #fff;box-shadow:var(--sh)}
+.sc-pt:hover{width:14px;height:14px}
+.sc-lbl{position:absolute;font-size:9px;color:var(--ink-2);transform:translate(-50%,6px);font-weight:600;pointer-events:none}
+
+/* scenario */
+.shock-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.shock-row:last-child{border:none}
+.shock-name{width:150px;font-size:12.5px;font-weight:500}
+.shock-slider{flex:1;height:5px;border-radius:3px;background:var(--line);position:relative}
+.shock-slider i{position:absolute;top:0;bottom:0;background:var(--accent);border-radius:3px}
+.shock-val{width:70px;text-align:right;font-weight:600;font-family:var(--mono);font-size:12px}
+.preset{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--line-2);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;margin:0 6px 6px 0;background:var(--panel)}
+.preset:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ask point */
+.chatlog{display:flex;flex-direction:column;gap:14px;max-width:820px}
+.q-bub{align-self:flex-end;background:var(--ink);color:#fff;padding:10px 14px;border-radius:12px 12px 2px 12px;font-size:13px;max-width:80%}
+.a-bub{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:12px 12px 12px 2px;width:100%;overflow:hidden}
+.a-sec{padding:11px 15px;border-bottom:1px solid var(--line)}
+.a-sec:last-child{border:none}
+.a-lab{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.a-big{font-size:15px;font-weight:600}
+.a-drv{display:flex;justify-content:space-between;padding:4px 0;font-size:12.5px;border-bottom:1px dashed var(--line)}
+.a-drv:last-child{border:none}
+.ask-bar{display:flex;gap:9px;margin-top:14px;max-width:820px}
+.ask-bar input{flex:1;border:1px solid var(--line-2);border-radius:var(--r);padding:11px 13px;font-family:var(--sans);font-size:13px;outline:none}
+.ask-bar input:focus{border-color:var(--accent)}
+.suggest{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;max-width:820px}
+.sg{font-size:11.5px;padding:6px 11px;border:1px solid var(--line-2);border-radius:20px;cursor:pointer;color:var(--ink-2);background:var(--panel)}
+.sg:hover{border-color:var(--accent);color:var(--accent)}
+
+/* drawer */
+.ov{position:fixed;inset:0;background:rgba(16,24,40,.35);opacity:0;pointer-events:none;transition:.2s;z-index:90}
+.ov.on{opacity:1;pointer-events:auto}
+.drw{position:fixed;top:0;right:0;height:100vh;width:min(560px,96vw);background:var(--panel);border-left:1px solid var(--line-2);
+  box-shadow:-20px 0 60px -20px rgba(16,24,40,.3);transform:translateX(100%);transition:.26s cubic-bezier(.3,.8,.3,1);z-index:100;display:flex;flex-direction:column}
+.drw.on{transform:none}
+.drw-h{padding:15px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel)}
+.drw-top{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.drw-x{margin-left:auto;width:30px;height:30px;border-radius:var(--r);border:1px solid var(--line-2);background:var(--panel);cursor:pointer;color:var(--muted);font-size:15px}
+.drw-ttl{font-size:16px;font-weight:700;letter-spacing:-.2px;line-height:1.3}
+.drw-b{overflow-y:auto;padding:16px 18px 30px}
+.drw-sec{margin-bottom:20px}
+.drw-sl{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;margin-bottom:9px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto}
+.tab{padding:8px 12px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.kv2{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r)}
+.kv2 .c{background:var(--panel);padding:9px 11px}
+.kv2 .k{font-size:10.5px;color:var(--muted)}
+.kv2 .v{font-size:14px;font-weight:700;margin-top:2px}
+.evi{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}
+.evi:last-child{border:none}
+.evi .src{font-weight:600;width:110px;flex:none;color:var(--accent)}
+.prov{background:var(--panel-2);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;font-size:11.5px;color:var(--muted);line-height:1.5}
+.prov b{color:var(--ink-2)}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+
+/* decision/journal */
+.dj{border:1px solid var(--line);border-radius:var(--r-lg);padding:13px 15px;margin-bottom:10px;background:var(--panel)}
+.dj-top{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.dj-date{font-size:11px;color:var(--muted);font-weight:600}
+.dj-rec{font-size:13px;font-weight:600}
+.dj-row{font-size:12px;color:var(--ink-2);margin:3px 0;line-height:1.5}
+.dj-row .k{color:var(--muted);display:inline-block;width:120px}
+.dj-out{display:flex;gap:16px;margin-top:8px;padding-top:9px;border-top:1px solid var(--line)}
+.dj-out .o .v{font-size:14px;font-weight:700}.dj-out .o .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+
+/* mover bars */
+.mover{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.mover:last-child{border:none}
+.mover .tk{width:62px}
+.mv-track{flex:1;height:18px;position:relative;display:flex;align-items:center}
+.mv-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line-2)}
+.mv-b{position:absolute;height:11px;border-radius:2px}
+.mover .pnl{width:72px;text-align:right;font-weight:600;font-family:var(--mono)}
+
+/* catalyst */
+.cal-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.cal-row:last-child{border:none}
+.cal-date{width:56px;flex:none;text-align:center}
+.cal-d{font-size:15px;font-weight:700;line-height:1}
+.cal-m{font-size:10px;color:var(--muted);text-transform:uppercase}
+.cal-main{flex:1}
+.cal-t{font-size:12.5px;font-weight:600}
+.cal-s{font-size:11px;color:var(--muted)}
+
+.foot-note{font-size:11px;color:var(--muted-2);text-align:center;padding:20px}
+.foot-note a{color:var(--accent);font-weight:600}
+
+@media(max-width:860px){.side{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="brand">
+      <div class="logo">P</div>
+      <div><b>Point</b><small>FUND INTELLIGENCE</small></div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-lab">Decide</div>
+      <a data-v="command" class="on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Command Center</a>
+      <a data-v="decisions"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Decisions<span class="cnt">4</span></a>
+      <a data-v="alerts"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>Alert Center<span class="cnt">7</span></a>
+      <div class="nav-lab">Analyze</div>
+      <a data-v="portfolio"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>Portfolio</a>
+      <a data-v="risk"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Risk</a>
+      <a data-v="guidelines"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Guidelines</a>
+      <a data-v="opportunities"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>Opportunities</a>
+      <div class="nav-lab">Model</div>
+      <a data-v="scenarios"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>Scenario Studio</a>
+      <a data-v="pnl"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>PnL Attribution</a>
+      <div class="nav-lab">Explore</div>
+      <a data-v="ask"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Ask Point</a>
+      <a data-v="reports"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Reports</a>
+      <a data-v="audit"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Audit Trail</a>
+    </nav>
+    <div class="side-foot">
+      <div class="role-pick" id="role-pick">
+        <div class="rp-av">AD</div>
+        <div><div class="rp-name">Admin</div><div class="rp-role" id="rp-role">PM · Apex L/S</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="top">
+      <div class="fundsel" id="fundsel">
+        <button class="fundsel-btn" id="fundsel-btn">
+          <span class="fs-ic" id="fs-ic" style="background:#3157d5">AX</span>
+          <span class="fs-main"><span class="fs-name" id="fs-name">Apex Long/Short Equity</span><span class="fs-sub" id="fs-sub">Equity L/S · $1.26B AUM</span></span>
+          <svg class="fs-caret" viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="m7 10 5 5 5-5z"/></svg>
+        </button>
+        <div class="fundsel-menu" id="fundsel-menu"></div>
+      </div>
+      <div class="asof" id="asof">
+        <b>Oct 07, 2026 · 09:42 ET</b><br/>
+        <span class="freshdot"><span class="fd live"></span>Prices live</span> ·
+        <span class="freshdot"><span class="fd"></span>Positions 09:35</span> ·
+        <span class="freshdot"><span class="fd"></span>Risk 09:41</span>
+      </div>
+      <div class="top-sp"></div>
+      <div class="ask-mini" id="ask-mini"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><input placeholder="Ask the book…" id="ask-mini-in"/></div>
+      <button class="icon-btn" data-goto="alerts" title="Alerts"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="dot"></span></button>
+      <a class="icon-btn" href="index.html" title="Back to site"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></a>
+    </header>
+
+    <!-- VIEWS injected / static below -->
+    <section class="view on" id="view-command"></section>
+    <section class="view" id="view-portfolio"></section>
+    <section class="view" id="view-risk"></section>
+    <section class="view" id="view-guidelines"></section>
+    <section class="view" id="view-opportunities"></section>
+    <section class="view" id="view-scenarios"></section>
+    <section class="view" id="view-pnl"></section>
+    <section class="view" id="view-decisions"></section>
+    <section class="view" id="view-alerts"></section>
+    <section class="view" id="view-ask"></section>
+    <section class="view" id="view-reports"></section>
+    <section class="view" id="view-audit"></section>
+  </main>
+</div>
+
+<!-- drawer -->
+<div class="ov" id="ov"></div>
+<aside class="drw" id="drw"><div id="drw-inner"></div></aside>
+
+<script>
+/* ===================== Point — Fund Intelligence Terminal ===================== */
+(function(){
+'use strict';
+const Q=s=>document.querySelector(s), QA=s=>[...document.querySelectorAll(s)];
+const fmt=n=>n.toLocaleString('en-US');
+const sgn=(v,suf='')=>(v>=0?'+':'')+v+suf;
+const cls=v=>v>0?'pos':v<0?'neg':'mut';
+
+/* ---------- FUNDS ---------- */
+const FUNDS={
+  apex:{ic:'AX',col:'#3157d5',name:'Apex Long/Short Equity',sub:'Equity L/S · $1.26B AUM',aum:'$1.26B',
+    nav:'$1.26B',day:'+$8.42M',dayp:'+0.67%',dayPos:true,gross:'186%',net:'42%',var:'7.4%',cash:'8.3%',
+    health:74,yhealth:81,type:'ls'},
+  helios:{ic:'HE',col:'#8a4fd8',name:'Helios Global Macro',sub:'Global Macro · $840M AUM',aum:'$840M',
+    nav:'$840M',day:'−$1.9M',dayp:'−0.23%',dayPos:false,gross:'142%',net:'18%',var:'6.1%',cash:'22%',
+    health:69,yhealth:66,type:'macro'},
+  vertex:{ic:'VX',col:'#16855b',name:'Vertex Market Neutral',sub:'Market Neutral · $1.56B AUM',aum:'$1.56B',
+    nav:'$1.56B',day:'+$1.4M',dayp:'+0.09%',dayPos:true,gross:'210%',net:'4%',var:'3.9%',cash:'11%',
+    health:82,yhealth:80,type:'neutral'},
+  nova:{ic:'NV',col:'#d97706',name:'Nova Digital Assets',sub:'Crypto + Tokenized · $318M AUM',aum:'$318M',
+    nav:'$318M',day:'−$6.8M',dayp:'−2.10%',dayPos:false,gross:'96%',net:'71%',var:'11.2%',cash:'14%',
+    health:58,yhealth:67,type:'digital'}
+};
+let FUND='apex';
+
+/* ---------- POSITIONS (Apex) ---------- */
+/* tk, company, side, qty, mv($M), nav%, day$M, mtd$M, ytd$M, varc%, rbud%, rused%, sector, factor, crowd, liqDays, catalyst, health, beta, ret% */
+const APEX=[
+['NVDA','NVIDIA Corp','L',120000,108.4,8.6,2.8,6.1,18.4,11.2,14,80,'Technology','Growth','High',2.1,'Earnings 12d','WATCH',1.82,13.2],
+['META','Meta Platforms','L',150000,84.7,6.7,1.9,4.2,15.1,7.4,10,74,'Comm Svcs','Growth','High',1.4,'Earnings 18d','GOOD',1.21,16.8],
+['MSFT','Microsoft','L',200000,82.6,6.6,-0.4,-2.1,9.2,6.1,9,68,'Technology','Quality','Mid',1.1,'—','WATCH',0.96,4.1],
+['AMZN','Amazon','L',380000,72.5,5.8,1.1,3.8,11.0,5.4,8,61,'Cons Disc','Growth','Mid',1.3,'Earnings 20d','GOOD',1.14,9.9],
+['GOOGL','Alphabet','L',420000,70.9,5.6,0.6,1.1,6.4,4.2,7,54,'Comm Svcs','Quality','Low',1.1,'—','GOOD',1.02,7.2],
+['AVGO','Broadcom','L',48000,62.1,4.9,1.4,3.3,10.6,6.8,9,79,'Technology','Growth','High',1.8,'Earnings 9d','WATCH',1.44,11.4],
+['AMD','Adv Micro Dev','L',310000,52.8,4.2,-1.2,-3.1,-2.4,9.1,11,98,'Technology','Growth','High',1.78,'Earnings 14d','TRIM',1.78,-4.0],
+['LLY','Eli Lilly','L',68000,61.4,4.9,0.4,2.0,8.1,3.9,6,62,'Health Care','Quality','Mid',1.6,'—','GOOD',0.62,12.1],
+['JPM','JPMorgan','L',240000,56.2,4.5,0.3,1.4,4.9,3.1,5,51,'Financials','Value','Low',0.9,'Earnings 2d','GOOD',1.08,6.4],
+['GS','Goldman Sachs','L',92000,44.6,3.5,0.2,0.9,3.2,2.8,4,59,'Financials','Value','Low',1.14,'Earnings 7d','WATCH',1.18,4.1],
+['COST','Costco','L',52000,40.8,3.2,0.5,2.0,2.9,2.1,3,51,'Cons Staples','Quality','Low',1.0,'—','GOOD',0.72,5.9],
+['UNH','UnitedHealth','L',58000,34.1,2.7,-0.3,-1.8,-3.2,4.6,5,92,'Health Care','Quality','Mid',1.2,'Investor Day 8d','TRIM',0.74,-5.1],
+['XOM','Exxon Mobil','L',280000,33.6,2.7,-0.6,0.8,5.1,3.4,4,78,'Energy','Value','Low',0.9,'—','WATCH',0.66,7.4],
+['CVX','Chevron','L',180000,28.4,2.3,-0.5,0.4,3.8,2.9,4,74,'Energy','Value','Low',1.0,'—','GOOD',0.64,5.1],
+['ANET','Arista Networks','L',62000,25.8,2.0,0.9,2.1,4.4,4.1,5,77,'Technology','Growth','High',1.33,'Earnings 16d','GOOD',1.33,8.6],
+['NFLX','Netflix','L',28000,22.1,1.8,0.4,1.1,3.9,3.6,4,71,'Comm Svcs','Growth','Mid',1.26,'Earnings 11d','GOOD',1.26,7.7],
+['UBER','Uber Tech','L',280000,20.4,1.6,0.8,1.9,4.1,3.0,4,62,'Technology','Growth','Low',1.1,'—','GOOD',1.28,9.1],
+['CRM','Salesforce','L',72000,19.9,1.6,-0.2,-0.9,0.4,3.9,4,88,'Technology','Growth','Mid',1.22,'Dreamforce 9d','WATCH',1.22,0.9],
+['TSLA','Tesla','S',-65000,-15.9,1.3,0.6,2.2,3.1,5.2,5,61,'Cons Disc','Growth','Mid',1.74,'Deliveries 6d','GOOD',-1.74,6.1],
+['WBA','Walgreens','S',-820000,-6.9,0.5,0.5,2.8,4.4,2.1,3,52,'Cons Staples','Value','Low',0.91,'—','GOOD',-0.91,9.4],
+['PEP','PepsiCo','S',-120000,-19.6,1.6,0.1,0.6,1.4,2.4,3,58,'Cons Staples','Quality','Low',0.58,'Earnings 3d','WATCH',-0.58,1.9],
+['INTC','Intel','S',-540000,-12.1,1.0,0.3,1.4,2.2,2.0,3,66,'Technology','Value','Low',1.05,'Earnings 13d','GOOD',-1.05,5.8],
+['HD','Home Depot','L',46000,18.4,1.5,0.4,1.5,2.6,2.2,3,55,'Cons Disc','Quality','Low',0.9,'—','GOOD',0.72,4.4],
+['PG','Procter & Gamble','L',108000,17.9,1.4,0.1,0.8,1.9,1.8,2,42,'Cons Staples','Quality','Low',0.6,'—','GOOD',0.38,3.1],
+['NOW','ServiceNow','L',18000,16.2,1.3,0.3,1.0,2.4,3.1,4,64,'Technology','Growth','Mid',1.29,'—','GOOD',1.29,4.9],
+['SNOW','Snowflake','L',94000,14.6,1.2,0.5,1.4,2.8,3.4,4,72,'Technology','Growth','Mid',1.4,'Investor Day 18d','GOOD',1.4,5.1]
+];
+const DATA={apex:APEX};
+function positions(){return DATA[FUND]||APEX;}
+
+/* health components */
+const HEALTH={
+  apex:[['Risk',72,-3,'VaR rose to 7.4% on semiconductor beta drift.',68],
+    ['Liquidity',91,0,'88% of book liquidates in under 3 days.',40],
+    ['Concentration',58,-9,'Semiconductor exposure increased after NVDA rally.',82],
+    ['Crowding',64,-4,'Three top holdings sit in top-decile HF ownership.',70],
+    ['Momentum',78,+2,'Breadth positive; growth factor leading.',38],
+    ['Catalyst Risk',69,-5,'Four holdings report earnings within 14 days.',62],
+    ['Guideline Headroom',84,-1,'Beta-adjusted net nearing IMA soft limit.',22]]
+};
+function health(){return HEALTH[FUND]||HEALTH.apex;}
+
+/* ---------- WHAT CHANGED ---------- */
+const CHANGED={
+  apex:{
+    RISK:[['VaR','7.1% → 7.4%',1],['Semiconductor exposure','21.4% → 24.8%',1],['Net exposure','38% → 42%',1]],
+    MARKET:[['NVDA','+4.2%',1],['WTI Crude','−3.1%',-1],['10Y Yield','+11 bps',1]],
+    FLOWS:[['2 names · institutional accumulation','META, AVGO',1],['1 name · rising short interest','AMD',-1]],
+    THESIS:[['3 positions · new contradicting evidence','AMD, UNH, CRM',-1]],
+    LIMITS:[['2 guidelines moved SAFE → WARNING','Beta-net, Tech exposure',-1]]
+  }
+};
+function changed(){return CHANGED[FUND]||CHANGED.apex;}
+
+/* ---------- ACTION CARDS ---------- */
+const CARDS=[
+  {id:'AC-7731',sev:'crit',agent:'Risk & Guideline',ts:'09:38 ET',conf:'High',fresh:'Risk 09:41',
+   title:'Semiconductor concentration approaching internal limit',
+   m:[['24.8%','Current'],['27%','Limit'],['28.3%','Projected'],['63%','1D breach prob'],['$18.4M','$ at risk']],
+   drivers:['NVDA appreciation (+4.2%)','AMD appreciation','Cross-correlation increase to 0.78'],
+   rec:'Reduce semiconductor beta or add an SMH hedge. Minimum fix: trim NVDA $8.4M (breach prob → 14%).',
+   evidence:[['Quant Engine','Concentration = 24.8% of NAV, computed 09:41 ET'],['Risk Agent','Projected 28.3% at next-open on current drift'],['Guideline Engine','Internal sector cap 27% (Risk Policy §3.1)']]},
+  {id:'AC-7728',sev:'crit',agent:'Macro & Regime',ts:'08:55 ET',conf:'Med',fresh:'Macro latest',
+   title:'CPI print tomorrow 08:30 — hot scenario = −$8.2M',
+   m:[['−$8.2M','Hot scenario'],['−0.65%','% NAV'],['0.6×','DV01 hedge'],['HIGH','Portfolio sens.']],
+   drivers:['Core CPI consensus 0.3% MoM','Book long-duration growth','Rate-vol sellers crowded'],
+   rec:'Deploy 10Y DV01 hedge ladder at 0.6× book. Carry < 2 bps/mo.',
+   evidence:[['Quant Engine','Scenario PnL grid vs position-level rate betas'],['Catalyst Calendar','CPI Oct 08 08:30 ET · HIGH sensitivity']]},
+  {id:'AC-7725',sev:'warn',agent:'Fund Flows',ts:'08:12 ET',conf:'Med',fresh:'13F 54d',
+   title:'META crowding score 92 — de-grossing vulnerability',
+   m:[['92','Crowding'],['14.1%','HF ownership'],['+7pts','QoQ Δ'],['HIGH','De-gross risk']],
+   drivers:['Top-decile hedge-fund ownership','Options skew steep','4 of top-10 funds trimming'],
+   rec:'Consider halving META or a Dec OTM put spread ahead of any vol event.',
+   evidence:[['Fund Flows Agent','13F observed Jun 30 · filed Aug 14 · 54 days old'],['Options','25-delta skew 90th percentile']]},
+  {id:'AC-7719',sev:'warn',agent:'Position Intel',ts:'07:40 ET',conf:'High',fresh:'News 2m',
+   title:'AMD thesis drift — alignment fell to 61%',
+   m:[['61%','Alignment'],['86%','Prior'],['−3.1%','MTD'],['98%','Risk budget used']],
+   drivers:['Gross-margin guidance weakened','Capex growth exceeded thesis','Competitor pricing pressure'],
+   rec:'Re-underwrite or trim. Position is high-risk / low-return (99% budget, −4% return).',
+   evidence:[['Position Intel','8-K + transcript delta vs recorded thesis'],['PnL Agent','YTD −$2.4M · efficiency POOR']]},
+  {id:'AC-7704',sev:'opp',agent:'Research & Alpha',ts:'07:05 ET',conf:'High',fresh:'Estimates 3h',
+   title:'META — Alpha 84, diversifies semiconductor concentration',
+   m:[['84','Alpha score'],['HIGH','Portfolio fit'],['+4.1/−2.3%','5D range'],['18d','Earnings']],
+   drivers:['Strong estimate revisions','Improving institutional positioning','Momentum positive'],
+   rec:'Add on weakness; portfolio fit HIGH — reduces reliance on semis for upside.',
+   evidence:[['Research Agent','Composite 84/100 · explainable factor stack'],['Flows Agent','Institutional ownership +7 pts QoQ']]},
+  {id:'AC-7698',sev:'opp',agent:'Earnings & Sentiment',ts:'06:50 ET',conf:'Med',fresh:'Transcript',
+   title:'TSMC read-across positive for NVDA, AVGO',
+   m:[['+','NVDA'],['+','AVGO'],['=','INTC'],['72%','Confidence']],
+   drivers:['TSMC raised AI-demand commentary','Capex guide reaffirmed','Supply tightness eased'],
+   rec:'Supports existing semis longs; no new action required — informational.',
+   evidence:[['Earnings Agent','TSMC call tone +0.3 QoQ, AI mentions +22%']]}
+];
+
+/* ---------- GUIDELINES ---------- */
+const LIMITS=[
+  ['Gross exposure','Risk Policy §2.1','186%','220%','250%','64%','4%','9%','14%','SAFE'],
+  ['Beta-adjusted net','IMA §4.2','56%','58%','60%','4%','48%','67%','74%','WARN'],
+  ['Technology exposure','Risk Policy §3.1','29%','30%','35%','6%','31%','42%','55%','WARN'],
+  ['Single-name max','IMA §4.5','8.6%','9%','10%','1.4%','12%','18%','22%','SAFE'],
+  ['Top-10 concentration','Risk Policy §3.2','44%','48%','50%','6%','3%','6%','9%','SAFE'],
+  ['1-day VaR / NAV','Risk Policy §5.1','7.4%','8.0%','9.0%','1.6%','2%','5%','8%','SAFE'],
+  ['Semiconductor sector','Risk Policy §3.1','24.8%','26%','27%','2.2%','31%','44%','58%','WARN'],
+  ['Short borrow avg fee','Ops Policy §1.3','118bp','200bp','250bp','132bp','0%','1%','2%','SAFE'],
+  ['Days-to-liquidate (95%)','Risk Policy §5.4','2.6','4.0','5.0','2.4','0%','1%','2%','SAFE']
+];
+
+/* ---------- DECISIONS ---------- */
+const DECISIONS=[
+  {date:'Oct 01',rec:'Reduce NVDA exposure',reason:'Concentration + earnings risk',dec:'Dismissed',by:'Admin (PM)',
+   note:'"Fundamental conviction remains strong."',out:[['NVDA 5D','−7.2%','neg'],['Portfolio impact','−$4.2M','neg'],['Verdict','Missed','warn']]},
+  {date:'Sep 28',rec:'Add SMH put spread hedge',reason:'Beta-net nearing IMA cap',dec:'Approved',by:'Admin (PM)',
+   note:'"Cheap insurance into CPI."',out:[['Cost','5 bps',''],['5D protection','+$1.1M','pos'],['Verdict','Correct','ok']]},
+  {date:'Sep 24',rec:'Trim MSFT 25% — alpha decay',reason:'Half-life expired, 18% risk budget',dec:'Modified',by:'Admin (PM)',
+   note:'"Trimmed 10% instead of 25%."',out:[['MSFT 5D','−2.1%','neg'],['Impact','−$0.4M','neg'],['Verdict','Partial','warn']]},
+  {date:'Sep 19',rec:'Initiate UBER long',reason:'FCF inflection, insider buying',dec:'Approved',by:'Admin (PM)',
+   note:'"Strong risk-adjusted entry."',out:[['UBER 5D','+7.2%','pos'],['Impact','+$1.4M','pos'],['Verdict','Correct','ok']]}
+];
+
+/* ---------- OPPORTUNITIES ---------- */
+const OPPS=[
+  ['META',84,'HIGH',78,62,'+3',' Positive',67,'+4.1/−2.3%','Earnings 18d','Low','Diversifies semi concentration'],
+  ['V',79,'HIGH',71,68,'+2','Positive',64,'+2.8/−1.9%','Earnings 9d','Low','Adds low-beta quality compounder'],
+  ['ANET',82,'MED',80,55,'+3','Positive',72,'+5.0/−3.1%','Earnings 16d','Mid','Already held — add on dip'],
+  ['LLY',81,'MED',66,48,'+2','Positive',70,'+3.2/−2.0%','—','Low','Health-care factor diversifier'],
+  ['SPOT',86,'LOW',84,52,'+4','Positive',68,'+6.1/−3.4%','Earnings 21d','Mid','New name — high momentum'],
+  ['NFLX',77,'MED',74,58,'+1','Neutral',66,'+4.4/−2.7%','Earnings 11d','Mid','Held — rank supports hold']
+];
+
+/* ======================= RENDERERS ======================= */
+function kcell(l,v,sub,subcls){return `<div class="kcell"><div class="klab">${l}</div><div class="kval num">${v}</div><div class="ksub ${subcls||'mut'}">${sub||''}</div></div>`;}
+
+function renderCommand(){
+  const f=FUNDS[FUND];
+  const strip=`<div class="kstrip">
+    ${kcell('NAV',f.nav,'as-of 09:42 ET')}
+    ${kcell('Daily PnL',f.day,f.dayp,f.dayPos?'pos':'neg')}
+    ${kcell('Gross',f.gross,'exposure')}
+    ${kcell('Net',f.net,'beta-adj 56%')}
+    ${kcell('1D VaR',f.var,'of NAV')}
+    ${kcell('Cash',f.cash,'available')}
+    ${kcell('Health',f.health+' / 100',sgn(f.health-f.yhealth)+' vs yest',f.health>=f.yhealth?'pos':'neg')}
+  </div>`;
+
+  // health ring
+  const h=f.health, circ=2*Math.PI*52, off=circ*(1-h/100);
+  const hcol=h>=75?'var(--pos)':h>=60?'var(--warn)':'var(--crit)';
+  const comps=health().map((c,i)=>{
+    const col=c[1]>=75?'var(--pos)':c[1]>=55?'var(--warn)':'var(--crit)';
+    return `<div class="hc" data-hc="${i}">
+      <div class="hc-top"><span class="hc-name">${c[0]}</span><span class="hc-val num">${c[1]}</span><span class="hc-chg num ${cls(c[2])}">${sgn(c[2])}</span></div>
+      <div class="hc-bar"><div class="hc-fill" style="width:${c[1]}%;background:${col}"></div></div>
+      <div class="hc-why">${c[3]}</div></div>`;}).join('');
+
+  const healthCard=`<div class="card">
+    <div class="card-h"><h3>Portfolio Health</h3><span class="sp"></span><span class="pill ${h>=75?'ok':h>=60?'warn':'crit'}">${h>=75?'HEALTHY':h>=60?'ELEVATED':'STRESSED'}</span></div>
+    <div class="card-b">
+      <div class="health">
+        <div class="ring"><svg width="118" height="118" viewBox="0 0 118 118">
+          <circle cx="59" cy="59" r="52" fill="none" stroke="var(--line)" stroke-width="10"/>
+          <circle cx="59" cy="59" r="52" fill="none" stroke="${hcol}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/>
+        </svg><div class="rc"><div class="rn num">${h}</div><div class="rl">/ 100</div></div></div>
+        <div class="health-meta">Yesterday <b class="num">${f.yhealth}</b> · Change <b class="num ${cls(h-f.yhealth)}">${sgn(h-f.yhealth)}</b><br/>
+        <span class="mut">Driven down by rising semiconductor concentration and net exposure. Seven components monitored by the Conductor.</span></div>
+      </div>
+    </div>
+    <div class="hcomp">${comps}</div></div>`;
+
+  // top risk
+  const topRisk=`<div class="card">
+    <div class="card-h"><h3>Top Risk</h3><span class="sp"></span><span class="pill crit">CRITICAL</span></div>
+    <div class="card-b">
+      <div style="font-size:13.5px;font-weight:600;margin-bottom:10px">Semiconductor concentration approaching internal limit</div>
+      <div class="kv2" style="margin-bottom:10px">
+        <div class="c"><div class="k">Current</div><div class="v num">24.8%</div></div>
+        <div class="c"><div class="k">Limit</div><div class="v num">27%</div></div>
+        <div class="c"><div class="k">Projected (1D)</div><div class="v num neg">28.3%</div></div>
+        <div class="c"><div class="k">Breach prob</div><div class="v num neg">63%</div></div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:10px">$ at risk <b class="num" style="color:var(--ink)">$18.4M</b> · drivers: NVDA +4.2%, AMD, correlation ↑</div>
+      <button class="btn pri sm" data-card="AC-7731">View analysis</button>
+      <button class="btn gh sm" data-goto="scenarios">Run scenario</button>
+    </div></div>`;
+
+  // top opportunity
+  const topOpp=`<div class="card">
+    <div class="card-h"><h3>Top Opportunity</h3><span class="sp"></span><span class="pill info">OPPORTUNITY</span></div>
+    <div class="card-b">
+      <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:10px"><div style="font-size:16px;font-weight:700">META</div><div class="mut" style="font-size:12px">Alpha 84 / 100</div></div>
+      <div class="kv2" style="margin-bottom:10px">
+        <div class="c"><div class="k">Expected 5D</div><div class="v num">+4.1 / −2.3%</div></div>
+        <div class="c"><div class="k">Institutional flow</div><div class="v pos" style="font-size:13px">Positive</div></div>
+        <div class="c"><div class="k">Momentum</div><div class="v pos" style="font-size:13px">Positive</div></div>
+        <div class="c"><div class="k">Earnings</div><div class="v num">18 days</div></div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:10px">Portfolio fit <b style="color:var(--pos)">STRONG</b> — diversifies semiconductor concentration.</div>
+      <button class="btn pri sm" data-card="AC-7704">View thesis</button>
+    </div></div>`;
+
+  // what changed
+  const ch=changed();
+  const wcCats=Object.keys(ch).map(cat=>`<div class="wc-cat"><div class="wc-h">${cat}</div>${
+    ch[cat].map(r=>`<div class="wc-row"><span class="lab">${r[0]}</span><span class="chg ${cls(r[2])}">${r[1]}</span><span class="wc-arrow">›</span></div>`).join('')}</div>`).join('');
+  const whatChanged=`<div class="card"><div class="card-h"><h3>What changed since yesterday?</h3><span class="sp"></span><span class="tag">Conductor · ranked</span></div><div class="card-b flush">${wcCats}</div></div>`;
+
+  // action cards (critical+warning)
+  const acHtml=CARDS.filter(c=>c.sev!=='opp').map(acardMarkup).join('');
+  const actionCards=`<div class="card"><div class="card-h"><h3>Action queue</h3><span class="sp"></span><span class="pill crit">2 critical</span><span class="pill warn">2 warning</span></div><div class="card-b">${acHtml}</div></div>`;
+
+  // limit headroom (compact)
+  const lhRows=LIMITS.slice(0,6).map(r=>{
+    const st=r[9], pct=parseFloat(r[2]), lim=parseFloat(r[4]), warn=parseFloat(r[3]);
+    const w=Math.min(100,pct/lim*100), col=st==='WARN'?'var(--warn)':st==='BREACH'?'var(--crit)':'var(--pos)';
+    return `<tr data-limit="${r[0]}"><td class="l">${r[0]}</td><td class="num">${r[2]}</td><td><span class="hr-bar"><span class="hr-fill" style="width:${w}%;background:${col}"></span><span class="hr-mark" style="left:${warn/lim*100}%"></span></span></td><td class="num">${r[4]}</td><td class="num ${st==='WARN'?'warnc':''}">${r[6]}</td><td><span class="pill ${st==='WARN'?'warn':st==='BREACH'?'crit':'ok'}">${st}</span></td></tr>`;}).join('');
+  const headroom=`<div class="card"><div class="card-h"><h3>Limit headroom</h3><span class="sp"></span><span class="pill warn">2 warning</span></div><div class="card-b flush"><div class="tbl-wrap"><table class="t"><thead><tr><th class="l">Rule</th><th>Current</th><th>Headroom</th><th>Limit</th><th>1D breach</th><th>Status</th></tr></thead><tbody>${lhRows}</tbody></table></div></div></div>`;
+
+  // catalysts
+  const cats=[['12','OCT','CPI · 08:30 ET','Portfolio sensitivity HIGH · scenario −$8.2M','crit'],
+    ['09','OCT','JPM earnings','Pre-market · read-across GS, financials','warn'],
+    ['16','OCT','AVGO earnings','After close · $62M position','warn'],
+    ['18','OCT','NVDA earnings','Largest position · implied move ±8%','crit'],
+    ['26','OCT','UNH investor day','Thesis in WARNING · $34M position','info']];
+  const catHtml=cats.map(c=>`<div class="cal-row"><div class="cal-date"><div class="cal-d num">${c[0]}</div><div class="cal-m">${c[1]}</div></div><div class="cal-main"><div class="cal-t">${c[2]}</div><div class="cal-s">${c[3]}</div></div><span class="pill ${c[4]}">${c[4]==='crit'?'HIGH':c[4]==='warn'?'MED':'INFO'}</span></div>`).join('');
+  const catalysts=`<div class="card"><div class="card-h"><h3>Upcoming catalysts</h3><span class="sp"></span><span class="tag">portfolio-aware</span></div><div class="card-b flush" style="padding:4px 15px">${catHtml}</div></div>`;
+
+  // movers
+  const mv=positions().slice().map(p=>({tk:p[0],v:p[6]})).sort((a,b)=>Math.abs(b.v)-Math.abs(a.v)).slice(0,8);
+  const mvMax=Math.max(...mv.map(m=>Math.abs(m.v)));
+  const mvHtml=mv.map(m=>{const w=Math.abs(m.v)/mvMax*48, pos=m.v>=0;
+    return `<div class="mover"><span class="tk">${m.tk}</span><div class="mv-track"><span class="mv-mid"></span><span class="mv-b" style="${pos?'left:50%':'right:50%'};width:${w}%;background:${pos?'var(--pos)':'var(--crit)'}"></span></div><span class="pnl ${cls(m.v)}">${sgn(m.v)}M</span></div>`;}).join('');
+  const movers=`<div class="card"><div class="card-h"><h3>Portfolio movers · today</h3><span class="sp"></span><span class="tag">$ PnL</span></div><div class="card-b">${mvHtml}</div></div>`;
+
+  // morning brief
+  const brief=`<div class="card"><div class="card-h"><h3>Point Morning Brief</h3><span class="sp"></span><span class="tag">composed 05:58 ET</span><button class="btn gh sm">Export</button></div><div class="card-b">
+    <div style="font-size:13px;line-height:1.6;color:var(--ink-2)">
+      <p style="margin:0 0 10px"><b>Overnight.</b> Semiconductor beta drifted higher as NVDA (+4.2%) and AVGO extended; net exposure rose 38% → 42%. Tokenized-equity venues traded semis −2.3% into the weekend. CPI prints tomorrow 08:30 ET — the dominant near-term risk.</p>
+      <p style="margin:0 0 10px"><b>Portfolio risk.</b> VaR 7.1% → 7.4%. Semiconductor concentration 24.8% vs 27% internal cap — projected 28.3% on current drift (<span class="neg">63% 1-day breach</span>). Beta-adjusted net and technology exposure both moved SAFE → WARNING.</p>
+      <p style="margin:0 0 10px"><b>Thesis.</b> AMD alignment fell 86% → 61% (margin + capex + pricing); position uses 98% of its risk budget for −4% return — flagged TRIM. UNH and CRM also show new contradicting evidence.</p>
+      <p style="margin:0"><b>Opportunities.</b> META ranks Alpha 84 with HIGH portfolio fit — adds non-semiconductor upside. TSMC read-across is positive for NVDA and AVGO.</p>
+    </div></div></div>`;
+
+  Q('#view-command').innerHTML=`
+    <div class="pg-head"><div><div class="pg-title">Command Center</div><div class="pg-sub">${f.name} · the fund in ten seconds</div></div>
+      <div class="filters"><button class="btn gh sm" data-goto="ask">Ask the book</button><button class="btn gh sm" data-goto="scenarios">Scenario studio</button><button class="btn pri sm" data-goto="decisions">Decision queue</button></div></div>
+    ${strip}
+    <div class="grid g-3">${healthCard}${topRisk}${topOpp}</div>
+    <div class="grid g-2b">${whatChanged}${actionCards}</div>
+    <div class="grid g-2b">${headroom}${catalysts}</div>
+    <div class="grid g-2">${movers}${brief}</div>
+    <div class="foot-note">Point Fund Intelligence · all quantitative values from the deterministic Quant Engine v2.4 · AI narrates, ranks and explains — it does not compute official values. <a href="index.html">Back to site</a></div>`;
+}
+
+function acardMarkup(c){
+  const sevl={crit:'CRITICAL',warn:'WARNING',opp:'OPPORTUNITY',info:'INFO'};
+  return `<div class="acard ${c.sev}" data-card="${c.id}">
+    <div class="ac-h"><span class="pill ${c.sev==='opp'?'info':c.sev}">${sevl[c.sev]}</span><span class="tag">${c.agent} · ${c.ts}</span><span class="sp"></span><span class="tag">#${c.id}</span></div>
+    <div class="ac-ttl">${c.title}</div>
+    <div class="ac-m">${c.m.map(x=>`<div class="ac-mi"><div class="v num">${x[0]}</div><div class="l">${x[1]}</div></div>`).join('')}</div>
+    <div class="ac-foot"><button class="btn pri sm" data-approve>Approve</button><button class="btn gh sm" data-goto="scenarios">What-if</button><button class="btn gh sm">Dismiss</button><span class="meta">Conf ${c.conf} · ${c.fresh}</span></div>
+  </div>`;
+}
+
+/* ---- PORTFOLIO ---- */
+let posSort={k:4,dir:-1}, posFilter='all';
+function renderPortfolio(){
+  const cols=['Ticker','Company','Side','Qty','Mkt Val','% NAV','Day','MTD','YTD','VaR c.','Risk used','Sector','Crowd','Liq','Catalyst','Health'];
+  let rows=positions().filter(p=>posFilter==='all'||(posFilter==='long'&&p[2]==='L')||(posFilter==='short'&&p[2]==='S')||(posFilter==='warn'&&(p[17]==='WATCH'||p[17]==='TRIM'))||(posFilter==='semi'&&p[12]==='Technology'));
+  rows=rows.slice().sort((a,b)=>{const k=posSort.k; let x=a[k],y=b[k]; if(typeof x==='string'){x=x.toLowerCase();y=y.toLowerCase();} return (x>y?1:x<y?-1:0)*posSort.dir;});
+  const body=rows.map(p=>{
+    const hc=p[17]==='GOOD'?'ok':p[17]==='TRIM'?'crit':'warn';
+    const cw=p[14]==='High'?'crit':p[14]==='Mid'?'warn':'neu';
+    const rb=p[11], rbcol=rb>=90?'var(--crit)':rb>=70?'var(--warn)':'var(--pos)';
+    return `<tr data-pos="${p[0]}">
+      <td class="l tk">${p[0]}</td><td class="l co">${p[1]}</td>
+      <td class="l"><span class="side-${p[2]==='L'?'l':'s'}">${p[2]==='L'?'LONG':'SHORT'}</span></td>
+      <td class="num">${fmt(p[3])}</td><td class="num">${p[4].toFixed(1)}M</td><td class="num">${p[5]}%</td>
+      <td class="num ${cls(p[6])}">${sgn(p[6])}</td><td class="num ${cls(p[7])}">${sgn(p[7])}</td><td class="num ${cls(p[8])}">${sgn(p[8])}</td>
+      <td class="num">${p[9]}%</td>
+      <td class="num"><span class="minibar"><i style="width:${rb}%;background:${rbcol}"></i></span> ${rb}%</td>
+      <td class="l">${p[12]}</td><td class="l"><span class="pill ${cw}">${p[14]}</span></td><td class="num">${p[15]}d</td>
+      <td class="l co">${p[16]}</td><td class="l"><span class="pill ${hc}">${p[17]}</span></td></tr>`;}).join('');
+  const heads=cols.map((c,i)=>`<th class="${i<3?'l':''}" data-sort="${colKey(i)}">${c}</th>`).join('');
+  const f=FUNDS[FUND];
+  Q('#view-portfolio').innerHTML=`
+    <div class="pg-head"><div><div class="pg-title">Portfolio</div><div class="pg-sub">${rows.length} positions · ${f.nav} NAV · gross ${f.gross} · net ${f.net}</div></div>
+      <input class="srch" placeholder="Search ticker…" id="pos-search"/></div>
+    <div class="card"><div class="card-h"><div class="filters">
+      ${['all:All','long:Long','short:Short','semi:Technology','warn:Watch/Trim'].map(x=>{const[k,l]=x.split(':');return `<button class="fchip ${posFilter===k?'on':''}" data-pf="${k}">${l}</button>`;}).join('')}
+      </div><span class="sp"></span><span class="tag">click a row → position intelligence</span></div>
+      <div class="card-b flush"><div class="tbl-wrap"><table class="t"><thead><tr>${heads}</tr></thead><tbody>${body}</tbody></table></div></div></div>`;
+}
+function colKey(i){return [0,1,2,3,4,5,6,7,8,9,11,12,14,15,16,17][i];}
+
+/* ---- RISK ---- */
+function renderRisk(){
+  const f=FUNDS[FUND];
+  const strip=`<div class="kstrip">
+    ${kcell('VaR 99%',f.var,'$93M · 1-day')}${kcell('CVaR 99%','9.8%','$123M tail')}
+    ${kcell('Gross',f.gross,'')}${kcell('Net β','56%','lim 60%','warnc')}
+    ${kcell('Drawdown','−4.6%','YTD max')}${kcell('Liquidity','2.6d','95% liquidate')}
+    ${kcell('Concentration','24.8%','semis · lim 27%','warnc')}</div>`;
+
+  // limit headroom full
+  const lh=LIMITS.map(r=>{const st=r[9],pct=parseFloat(r[2])||0,lim=parseFloat(r[4])||1,warn=parseFloat(r[3])||lim;
+    const w=Math.min(100,pct/lim*100),col=st==='WARN'?'var(--warn)':st==='BREACH'?'var(--crit)':'var(--pos)';
+    return `<tr data-limit="${r[0]}"><td class="l">${r[0]}</td><td class="l co">${r[1]}</td><td class="num">${r[2]}</td><td class="num mut">${r[3]}</td><td class="num">${r[4]}</td><td><span class="hr-bar"><span class="hr-fill" style="width:${w}%;background:${col}"></span><span class="hr-mark" style="left:${Math.min(100,warn/lim*100)}%"></span></span></td><td class="num ${st==='WARN'?'warnc':''}">${r[6]}</td><td class="num">${r[7]}</td><td class="num">${r[8]}</td><td><span class="pill ${st==='WARN'?'warn':st==='BREACH'?'crit':'ok'}">${st}</span></td></tr>`;}).join('');
+  const headroom=`<div class="card"><div class="card-h"><h3>Limit headroom & breach forecast</h3><span class="sp"></span><span class="tag">Guideline Engine · click source</span></div><div class="card-b flush"><div class="tbl-wrap"><table class="t"><thead><tr><th class="l">Rule</th><th class="l">Source</th><th>Current</th><th>Warn</th><th>Limit</th><th>Headroom</th><th>1D</th><th>3D</th><th>5D</th><th>Status</th></tr></thead><tbody>${lh}</tbody></table></div></div></div>`;
+
+  // risk attribution waterfall
+  const wf=[['Yesterday',7.1,'base'],['NVDA position',0.42,'up'],['Higher vol',0.31,'up'],['Correlation',0.18,'up'],['USD exposure',0.11,'up'],['Other',0.08,'up'],['Today',8.2,'base']];
+  let cum=0; const wmax=8.6;
+  const wfHtml=wf.map(w=>{let h,bottom=0;
+    if(w[2]==='base'){h=w[1]/wmax*100;cum=w[1];} else {h=w[1]/wmax*100;bottom=cum/wmax*100;cum+=w[1];}
+    const col=w[2]==='base'?'var(--accent)':'var(--warn)';
+    return `<div class="wf-col"><div class="wf-v num">${w[2]==='base'?w[1].toFixed(1):sgn(w[1])}</div><div class="wf-bar" style="height:${h}%;margin-bottom:${bottom}%;background:${col}"></div><div class="wf-lab">${w[0]}</div></div>`;}).join('');
+  const waterfall=`<div class="card"><div class="card-h"><h3>What changed my risk? · VaR attribution</h3><span class="sp"></span><div class="filters"><button class="fchip on">1D</button><button class="fchip">1W</button><button class="fchip">1M</button></div></div><div class="card-b"><div class="wf">${wfHtml}</div><div class="mut" style="font-size:11px;text-align:center;margin-top:8px">VaR rose <b class="num" style="color:var(--ink)">+1.1%</b> (7.1% → 8.2%), driven mainly by the new NVDA risk and rising cross-correlation. Source: Quant Engine v2.4, 09:41 ET.</div></div></div>`;
+
+  // risk budget
+  const rb=positions().slice().sort((a,b)=>b[11]-a[11]).slice(0,10).map(p=>{
+    const eff=p[19]>=8?'GOOD':p[19]>=0?'FAIR':'POOR'; const ec=eff==='GOOD'?'ok':eff==='FAIR'?'warn':'crit';
+    return `<tr data-pos="${p[0]}"><td class="l tk">${p[0]}</td><td class="num">${p[5]}%</td><td class="num">${p[9]}%</td><td class="num">${p[10]}%</td><td class="num">${p[11]}%</td><td class="num ${cls(p[19])}">${sgn(p[19],'%')}</td><td><span class="pill ${ec}">${eff}</span></td></tr>`;}).join('');
+  const budget=`<div class="card"><div class="card-h"><h3>Risk budget utilization</h3><span class="sp"></span><span class="pill crit">2 high-risk / low-return</span></div><div class="card-b flush"><div class="tbl-wrap"><table class="t"><thead><tr><th class="l">Position</th><th>Weight</th><th>VaR c.</th><th>Budget</th><th>Used</th><th>Return c.</th><th>Efficiency</th></tr></thead><tbody>${rb}</tbody></table></div></div></div>`;
+
+  // risk efficiency scatter (return vs risk)
+  const pts=positions().map(p=>({tk:p[0],x:p[9],y:p[19],mv:p[4]}));
+  const xmax=Math.max(...pts.map(p=>p.x))*1.15, ymin=Math.min(...pts.map(p=>p.y))-2, ymax=Math.max(...pts.map(p=>p.y))*1.1;
+  const scHtml=pts.map(p=>{
+    const px=p.x/xmax*100, py=100-((p.y-ymin)/(ymax-ymin)*100);
+    const danger=p.x>6&&p.y<4; const col=danger?'var(--crit)':p.y>8?'var(--pos)':'var(--accent)';
+    const sz=Math.max(8,Math.min(18,p.mv/8));
+    return `<div class="sc-pt" data-pos="${p.tk}" style="left:${px}%;top:${py}%;width:${sz}px;height:${sz}px;background:${col}" title="${p.tk}"></div><div class="sc-lbl" style="left:${px}%;top:${py}%">${p.tk}</div>`;}).join('');
+  const scatter=`<div class="card"><div class="card-h"><h3>Risk efficiency · return vs VaR contribution</h3><span class="sp"></span><span class="tag">bubble = market value · red = trim candidates</span></div><div class="card-b"><div class="scatter">
+    <div class="sc-axis" style="left:50%;top:0;bottom:0;width:1px"></div><div class="sc-axis" style="top:50%;left:0;right:0;height:1px"></div>
+    <div class="sc-q" style="left:8px;top:8px">High return / low risk</div><div class="sc-q" style="right:8px;top:8px">High return / high risk</div>
+    <div class="sc-q" style="left:8px;bottom:8px">Low return / low risk</div><div class="sc-q" style="right:8px;bottom:8px;color:var(--crit)">Low return / HIGH risk · TRIM</div>
+    ${scHtml}</div><div class="mut" style="font-size:11px;margin-top:8px">X = VaR contribution · Y = return contribution. The lower-right quadrant flags <b style="color:var(--crit)">AMD</b> and <b style="color:var(--crit)">UNH</b> as trim candidates — high risk, low/negative return.</div></div></div>`;
+
+  // concentration + liquidity
+  const sectorAgg={}; positions().forEach(p=>{sectorAgg[p[12]]=(sectorAgg[p[12]]||0)+Math.abs(p[5]);});
+  const srt=Object.entries(sectorAgg).sort((a,b)=>b[1]-a[1]);
+  const smax=srt[0][1];
+  const conc=srt.map(s=>`<div class="bar-row" style="display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:12px"><span style="width:110px">${s[0]}</span><span style="flex:1;height:7px;background:var(--line);border-radius:4px;overflow:hidden"><i style="display:block;height:100%;width:${s[1]/smax*100}%;background:${s[0]==='Technology'?'var(--warn)':'var(--accent)'};border-radius:4px"></i></span><span class="num" style="width:44px;text-align:right;font-weight:600">${s[1].toFixed(1)}%</span></div>`).join('');
+  const concentration=`<div class="card"><div class="card-h"><h3>Sector concentration</h3><span class="sp"></span><span class="pill warn">Tech 29% · cap 35%</span></div><div class="card-b">${conc}</div></div>`;
+
+  const liq=[['< 1 day',62,'var(--pos)'],['1–3 days',26,'var(--pos)'],['3–5 days',8,'var(--warn)'],['5–10 days',3,'var(--warn)'],['> 10 days',1,'var(--crit)']];
+  const liqHtml=liq.map(l=>`<div class="bar-row" style="display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:12px"><span style="width:84px">${l[0]}</span><span style="flex:1;height:7px;background:var(--line);border-radius:4px;overflow:hidden"><i style="display:block;height:100%;width:${l[1]}%;background:${l[2]};border-radius:4px"></i></span><span class="num" style="width:40px;text-align:right;font-weight:600">${l[1]}%</span></div>`).join('');
+  const liquidity=`<div class="card"><div class="card-h"><h3>Liquidity · days to liquidate</h3><span class="sp"></span><span class="tag">at 20% ADV</span></div><div class="card-b">${liqHtml}<div class="mut" style="font-size:11px;margin-top:6px">88% of the book liquidates within 3 days. Full liquidation estimate: 2.6 days (95%).</div></div></div>`;
+
+  Q('#view-risk').innerHTML=`<div class="pg-head"><div><div class="pg-title">Risk</div><div class="pg-sub">${f.name} · deterministic Quant Engine v2.4 · updated 09:41 ET</div></div></div>
+    ${strip}${headroom}<div class="grid g-2b">${waterfall}${scatter}</div>${budget}<div class="grid g-2">${concentration}${liquidity}</div>`;
+}
+
+/* ---- GUIDELINES ---- */
+function renderGuidelines(){
+  const rows=LIMITS.map(r=>{const st=r[9];
+    return `<tr data-limit="${r[0]}"><td class="l">${r[0]}</td><td class="l co">${r[1]}</td><td class="num">${r[2]}</td><td class="num">${r[4]}</td><td class="num">${r[5]}</td><td class="num ${st==='WARN'?'warnc':''}">${r[6]} / ${r[7]} / ${r[8]}</td><td><span class="pill ${st==='WARN'?'warn':st==='BREACH'?'crit':'ok'}">${st}</span></td></tr>`;}).join('');
+  Q('#view-guidelines').innerHTML=`<div class="pg-head"><div><div class="pg-title">Guideline Engine</div><div class="pg-sub">Investment mandate · codified, compliance-approved rules · forecast by Quant Engine</div></div><button class="btn gh sm">Propose rule (AI)</button></div>
+    <div class="card"><div class="card-h"><h3>Mandate rules</h3><span class="sp"></span><span class="tag">click a rule → source clause</span><span class="pill warn">3 warning</span></div><div class="card-b flush"><div class="tbl-wrap"><table class="t"><thead><tr><th class="l">Rule</th><th class="l">Source</th><th>Current</th><th>Threshold</th><th>Headroom</th><th>Breach 1/3/5D</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>
+    <div class="prov" style="margin-top:4px"><b>Governance.</b> AI may <b>propose</b> rules from IMAs, PPMs and side letters, but only compliance-approved rules become active. Each active rule carries a source clause, machine definition, approver and version.</div>`;
+}
+
+/* ---- OPPORTUNITIES ---- */
+function renderOpps(){
+  const rows=OPPS.map(o=>{const fit=o[2]==='HIGH'?'ok':o[2]==='MED'?'warn':'neu';
+    return `<tr data-pos="${o[0]}"><td class="l tk">${o[0]}</td><td class="num" style="font-weight:700">${o[1]}</td><td><span class="pill ${fit}">${o[2]}</span></td><td class="num">${o[3]}</td><td class="num">${o[4]}</td><td class="num pos">${o[5]}</td><td class="l pos">${o[6]}</td><td class="num">${o[7]}</td><td class="num">${o[8]}</td><td class="l co">${o[9]}</td><td class="l co">${o[11]}</td><td><button class="btn gh sm" data-card="AC-7704">Thesis</button></td></tr>`;}).join('');
+  Q('#view-opportunities').innerHTML=`<div class="pg-head"><div><div class="pg-title">Opportunities</div><div class="pg-sub">Portfolio-aware ideas — every opportunity answers "why is this relevant to <b>this</b> fund?"</div></div></div>
+    <div class="card"><div class="card-h"><h3>Ranked ideas</h3><span class="sp"></span><span class="tag">Research & Alpha + Flows + Earnings</span></div><div class="card-b flush"><div class="tbl-wrap"><table class="t"><thead><tr><th class="l">Ticker</th><th>Alpha</th><th>Fit</th><th>Momentum</th><th>Valuation</th><th>Revisions</th><th>Flows</th><th>Sentiment</th><th>Exp 5D</th><th class="l">Catalyst</th><th class="l">Why this fund</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
+}
+
+/* ---- SCENARIOS ---- */
+const PRESETS=['Rates +50 bp','Nasdaq −5%','S&P 500 −10%','Oil +10%','USD +5%','VIX 35','Semiconductors −10%','BTC −15%','Credit +100 bp'];
+const SHOCKS=[['10Y Yield','+50 bp',70],['Nasdaq','−7%',40],['Oil','+12%',62],['USD','+3%',55],['BTC','−15%',30]];
+function renderScenarios(){
+  const presetHtml=PRESETS.map(p=>`<span class="preset">${p}</span>`).join('');
+  const shockHtml=SHOCKS.map(s=>`<div class="shock-row"><span class="shock-name">${s[0]}</span><div class="shock-slider"><i style="left:${s[2]-6}%;width:12px"></i></div><span class="shock-val">${s[1]}</span></div>`).join('');
+  const losers=[['NVDA',-8.4],['AMD',-4.3],['META',-3.9],['AVGO',-3.1],['MSFT',-2.6]];
+  const lmax=8.4;
+  const loseHtml=losers.map(l=>`<div class="mover"><span class="tk">${l[0]}</span><div class="mv-track"><span class="mv-b" style="right:0;width:${Math.abs(l[1])/lmax*100}%;background:var(--crit)"></span></div><span class="pnl neg">${l[1]}M</span></div>`).join('');
+  Q('#view-scenarios').innerHTML=`<div class="pg-head"><div><div class="pg-title">Scenario Studio</div><div class="pg-sub">Shock the book · results from Quant Engine stress API</div></div><button class="btn pri sm">Run scenario</button></div>
+    <div class="grid g-2b">
+      <div class="card"><div class="card-h"><h3>Custom scenario</h3><span class="sp"></span></div><div class="card-b">
+        <div class="mut" style="font-size:11px;margin-bottom:8px">Presets — click to load</div><div style="margin-bottom:14px">${presetHtml}</div>
+        <div class="drw-sl">Active shocks</div>${shockHtml}
+        <button class="btn pri" style="margin-top:14px;width:100%">Run scenario</button></div></div>
+      <div class="card"><div class="card-h"><h3>Scenario result</h3><span class="sp"></span><span class="pill crit">2 limits breached</span></div><div class="card-b">
+        <div class="kv2" style="margin-bottom:12px">
+          <div class="c"><div class="k">Estimated PnL</div><div class="v num neg">−$34.8M</div></div>
+          <div class="c"><div class="k">% NAV</div><div class="v num neg">−2.76%</div></div>
+          <div class="c"><div class="k">VaR</div><div class="v num">7.4% → 10.9%</div></div>
+          <div class="c"><div class="k">Net β</div><div class="v num">0.42 → 0.51</div></div>
+        </div>
+        <div class="drw-sl">Top loss contributors</div>${loseHtml}
+        <div class="drw-sl" style="margin-top:14px">Potential hedges</div>
+        <div class="filters"><span class="preset">SMH puts</span><span class="preset">QQQ puts</span><span class="preset">Reduce NVDA</span></div>
+      </div></div>
+    </div>
+    <div class="prov">Stress results are produced by the deterministic Quant Engine stress API against position-level factor betas. AI proposes hedges and explains drivers; it does not compute the stress PnL.</div>`;
+}
+
+/* ---- PNL ---- */
+function renderPnl(){
+  const byName=positions().slice().sort((a,b)=>b[7]-a[7]);
+  const max=Math.max(...byName.map(p=>Math.abs(p[7])));
+  const bars=byName.map(p=>{const h=Math.abs(p[7])/max*100,pos=p[7]>=0;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:${pos?'flex-end':'flex-start'};height:100%"><div style="width:72%;${pos?'':'order:2;'}height:${h}%;background:${pos?'var(--pos)':'var(--crit)'};border-radius:${pos?'3px 3px 0 0':'0 0 3px 3px'}"></div><div style="font-size:9px;color:var(--muted);margin-top:4px;${pos?'':'order:1;margin-bottom:4px;margin-top:0'}">${p[0]}</div></div>`;}).join('');
+  Q('#view-pnl').innerHTML=`<div class="pg-head"><div><div class="pg-title">PnL Attribution</div><div class="pg-sub">${FUNDS[FUND].name} · reconciled to admin</div></div><div class="filters"><button class="fchip">Today</button><button class="fchip on">MTD</button><button class="fchip">QTD</button><button class="fchip">YTD</button></div></div>
+    <div class="kstrip"><div class="kcell"><div class="klab">Total MTD</div><div class="kval num pos">+$29.4M</div><div class="ksub pos">+2.33%</div></div>
+      ${kcell('Long PnL','+$34.1M','',' pos')}${kcell('Short PnL','−$4.7M','','neg')}${kcell('Factor','+$11.2M','38% of total')}${kcell('Stock-specific','+$18.2M','62% of total')}${kcell('Hit rate','64%','W/L 1.9')}${kcell('vs Bench','+71 bps','net of fees','pos')}</div>
+    <div class="card"><div class="card-h"><h3>Attribution by position · MTD</h3><span class="sp"></span><span class="tag">$ PnL</span></div><div class="card-b"><div style="display:flex;align-items:center;height:170px;gap:3px">${bars}</div></div></div>
+    <div class="card"><div class="card-h"><h3>PnL reconciliation</h3><span class="sp"></span><span class="pill ok">RECONCILED · 1bp tol</span></div><div class="card-b">
+      <div class="kv2" style="margin-bottom:12px"><div class="c"><div class="k">Point PnL</div><div class="v num">$8.43M</div></div><div class="c"><div class="k">Admin PnL</div><div class="v num">$8.42M</div></div><div class="c"><div class="k">Difference</div><div class="v num">$10K</div></div><div class="c"><div class="k">Status</div><div class="v pos" style="font-size:14px">Reconciled</div></div></div>
+      <div class="drw-sl">Reconciliation bridge</div>
+      ${[['Price effect','+$8.21M'],['FX effect','+$0.08M'],['Trade effect','+$0.19M'],['Corporate actions','$0.00M'],['Fees','−$0.04M'],['Financing','−$0.01M'],['Residual','+$0.01M']].map(r=>`<div class="a-drv"><span>${r[0]}</span><span class="num">${r[1]}</span></div>`).join('')}
+    </div></div>`;
+}
+
+/* ---- DECISIONS ---- */
+function renderDecisions(){
+  const djs=DECISIONS.map(d=>{const dc=d.dec==='Approved'?'ok':d.dec==='Dismissed'?'crit':'warn';
+    return `<div class="dj"><div class="dj-top"><span class="dj-date">${d.date}</span><span class="dj-rec">${d.rec}</span><span class="sp" style="flex:1"></span><span class="pill ${dc}">${d.dec.toUpperCase()}</span></div>
+      <div class="dj-row"><span class="k">Reason</span>${d.reason}</div>
+      <div class="dj-row"><span class="k">Decision maker</span>${d.by}</div>
+      <div class="dj-row"><span class="k">PM comment</span><i>${d.note}</i></div>
+      <div class="dj-out">${d.out.map(o=>`<div class="o"><div class="v num ${o[2]}">${o[1]}</div><div class="l">${o[0]}</div></div>`).join('')}</div></div>`;}).join('');
+  Q('#view-decisions').innerHTML=`<div class="pg-head"><div><div class="pg-title">Decision Journal</div><div class="pg-sub">Institutional memory · every Action Card becomes a decision record</div></div></div>
+    <div class="kstrip"><div class="kcell"><div class="klab">Accepted hit rate</div><div class="kval num">67%</div><div class="ksub pos">+42 bps avg 5D</div></div>
+      ${kcell('Dismissed','18 bps','missed alpha','neg')}${kcell('Risk Agent','82%','effectiveness')}${kcell('Technical','61%','effectiveness')}${kcell('Flows','74%','effectiveness')}${kcell('Macro','69%','effectiveness')}${kcell('Open','4','awaiting decision','warnc')}</div>
+    <div class="two"><div><div class="drw-sl" style="margin-bottom:10px">Open queue</div>${CARDS.filter(c=>c.sev!=='opp').map(acardMarkup).join('')}</div>
+      <div><div class="drw-sl" style="margin-bottom:10px">Decision history & outcomes</div>${djs}</div></div>`;
+}
+
+/* ---- ALERTS ---- */
+function renderAlerts(){
+  const groups=[['Critical','crit',CARDS.filter(c=>c.sev==='crit')],['Warnings','warn',CARDS.filter(c=>c.sev==='warn')],['Opportunities','info',CARDS.filter(c=>c.sev==='opp')]];
+  const html=groups.map(g=>g[2].length?`<div class="card"><div class="card-h"><h3>${g[0]}</h3><span class="sp"></span><span class="pill ${g[1]}">${g[2].length}</span></div><div class="card-b">${g[2].map(acardMarkup).join('')}</div></div>`:'').join('');
+  Q('#view-alerts').innerHTML=`<div class="pg-head"><div><div class="pg-title">Alert Center</div><div class="pg-sub">One unified inbox · duplicates grouped by the Conductor</div></div><div class="filters"><button class="fchip on">All</button><button class="fchip">Unread</button><button class="fchip">Assigned to me</button></div></div>
+    <div class="prov" style="margin-bottom:14px"><b>3 related semiconductor signals grouped</b> into one critical card — instead of three separate alerts, the Conductor de-duplicates and ranks by $ at risk.</div>${html}`;
+}
+
+/* ---- ASK ---- */
+const ANSWERS={
+  default:{a:'Portfolio VaR increased from 7.1% to 8.2% today.',keys:[['VaR today','8.2%'],['VaR yesterday','7.1%'],['Change','+1.1%']],
+    drv:[['New NVDA position','+0.42%'],['Market volatility','+0.31%'],['Correlation increase','+0.18%'],['FX','+0.11%'],['Other','+0.08%']],
+    pos:'NVDA, AVGO, AMD are the largest VaR contributors.',next:'Open Risk → VaR attribution, or run a Scenario.',src:'Point Quant Engine v2.4 · calculated 09:41 ET'}
+};
+function renderAsk(){
+  const suggest=['Why did portfolio risk increase today?','Which 3 positions lose most if rates rise 50bp?','What can I sell to cut gross 20% with minimum alpha loss?','Which earnings next week create >$1M implied PnL risk?','Why is AMD a warning?','Show my largest crowding risks.'];
+  Q('#view-ask').innerHTML=`<div class="pg-head"><div><div class="pg-title">Ask Point</div><div class="pg-sub">Ask the book — answers are structured, sourced and actionable</div></div></div>
+    <div class="chatlog" id="chatlog">
+      <div class="q-bub">Why did VaR increase today?</div>
+      ${answerBubble(ANSWERS.default)}
+    </div>
+    <div class="suggest">${suggest.map(s=>`<span class="sg" data-ask="${s}">${s}</span>`).join('')}</div>
+    <div class="ask-bar"><input id="ask-in" placeholder="Ask about risk, exposure, PnL, catalysts, thesis…"/><button class="btn pri" id="ask-send">Ask</button></div>`;
+}
+function answerBubble(A){
+  return `<div class="a-bub">
+    <div class="a-sec"><div class="a-lab">Answer</div><div class="a-big">${A.a}</div></div>
+    <div class="a-sec"><div class="a-lab">Key numbers</div><div class="two" style="gap:0">${A.keys.map(k=>`<div class="a-drv"><span>${k[0]}</span><span class="num">${k[1]}</span></div>`).join('')}</div></div>
+    <div class="a-sec"><div class="a-lab">Drivers</div>${A.drv.map(d=>`<div class="a-drv"><span>${d[0]}</span><span class="num">${d[1]}</span></div>`).join('')}</div>
+    <div class="a-sec"><div class="a-lab">Positions</div><div style="font-size:12.5px;color:var(--ink-2)">${A.pos}</div></div>
+    <div class="a-sec"><div class="a-lab">Recommended next step</div><div style="font-size:12.5px;color:var(--ink-2)">${A.next}</div></div>
+    <div class="a-sec" style="display:flex;gap:16px;align-items:center;background:var(--panel-2)"><span class="mut" style="font-size:11px">Source: ${A.src}</span><span class="sp" style="flex:1"></span><button class="btn gh sm" data-goto="risk">Open Risk</button><button class="btn gh sm" data-goto="scenarios">Run scenario</button></div>
+  </div>`;
+}
+
+/* ---- REPORTS ---- */
+function renderReports(){
+  const reps=[['Monthly Tear Sheet','Sep 2026','Published','ok'],['Investor Letter','Oct 2026','AI Draft','neu'],['Risk Transparency Report','Q3 2026','Pending Approval','warn'],['DDQ · Castle Peak','On-demand','Approved','ok'],['Performance Attribution','Sep 2026','Published','ok'],['Exposure Report','Weekly','AI Draft','neu']];
+  const rows=reps.map(r=>`<tr><td class="l" style="font-weight:600">${r[0]}</td><td class="l co">${r[1]}</td><td><span class="pill ${r[3]}">${r[2]}</span></td><td class="l"><button class="btn gh sm">Open</button> <button class="btn gh sm">Export PDF</button></td></tr>`).join('');
+  Q('#view-reports').innerHTML=`<div class="pg-head"><div><div class="pg-title">Reporting Center</div><div class="pg-sub">AI Draft → Reviewer → Compliance → Approved → Export · every number carries source provenance</div></div><button class="btn pri sm">New report</button></div>
+    <div class="card"><div class="card-h"><h3>Reports</h3><span class="sp"></span><span class="tag">approval workflow</span></div><div class="card-b flush"><div class="tbl-wrap"><table class="t"><thead><tr><th class="l">Report</th><th class="l">Period</th><th>Status</th><th class="l">Actions</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
+}
+
+/* ---- AUDIT ---- */
+function renderAudit(){
+  const ev=[['09:41:02','admin','Risk Agent','v2.3','Quant v2.4','AC-7731 composed','—'],['09:38:44','conductor','Conductor','v1.8','—','Grouped 3 semis signals','—'],['09:12:10','admin','—','—','—','AC-7725 dismissed','Admin'],['08:55:31','macro','Macro Agent','v2.0','Quant v2.4','AC-7728 composed','—'],['Oct 01','admin','—','—','—','AC-7701 (NVDA trim) dismissed','Admin']];
+  const rows=ev.map(e=>`<tr><td class="l mono">${e[0]}</td><td class="l">${e[1]}</td><td class="l">${e[2]}</td><td class="l co">${e[3]}</td><td class="l co">${e[4]}</td><td class="l">${e[5]}</td><td class="l">${e[6]}</td></tr>`).join('');
+  Q('#view-audit').innerHTML=`<div class="pg-head"><div><div class="pg-title">Audit Trail</div><div class="pg-sub">Complete lineage · agent, version, quant version, inputs, decision, approver</div></div><div class="filters"><button class="btn gh sm">Export CSV</button><button class="btn gh sm">Export JSON</button></div></div>
+    <div class="card"><div class="card-h"><h3>Event log</h3><span class="sp"></span><input class="srch" placeholder="Filter…"/></div><div class="card-b flush"><div class="tbl-wrap"><table class="t"><thead><tr><th class="l">Time</th><th class="l">User</th><th class="l">Agent</th><th class="l">Agent v.</th><th class="l">Quant v.</th><th class="l">Event</th><th class="l">Approver</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`;
+}
+
+/* ======================= DRAWER ======================= */
+const ov=Q('#ov'),drw=Q('#drw'),drwInner=Q('#drw-inner');
+function openDrw(html){drwInner.innerHTML=html;ov.classList.add('on');drw.classList.add('on');document.body.style.overflow='hidden';
+  const x=Q('#drw-x'); if(x)x.onclick=closeDrw;
+  QA('#drw [data-approve]').forEach(b=>b.onclick=function(){this.textContent='Approved ✓';this.style.background='var(--pos)';setTimeout(closeDrw,500);});
+  QA('#drw .tab').forEach(t=>t.onclick=()=>{QA('#drw .tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+    QA('#drw [data-tabc]').forEach(c=>c.style.display=c.dataset.tabc===t.dataset.tab?'':'none');});
+}
+function closeDrw(){ov.classList.remove('on');drw.classList.remove('on');document.body.style.overflow='';}
+ov.onclick=closeDrw;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrw();});
+
+function openCard(id){
+  const c=CARDS.find(x=>x.id===id); if(!c)return;
+  const sevl={crit:'CRITICAL',warn:'WARNING',opp:'OPPORTUNITY'};
+  openDrw(`<div class="drw-h"><div class="drw-top"><span class="pill ${c.sev==='opp'?'info':c.sev}">${sevl[c.sev]}</span><span class="tag">${c.agent} · ${c.ts} · #${c.id}</span><button class="drw-x" id="drw-x">✕</button></div><div class="drw-ttl">${c.title}</div></div>
+    <div class="drw-b">
+      <div class="drw-sec"><div class="drw-sl">Key numbers</div><div class="kv2">${c.m.map(x=>`<div class="c"><div class="k">${x[1]}</div><div class="v num">${x[0]}</div></div>`).join('')}</div></div>
+      <div class="drw-sec"><div class="drw-sl">Drivers</div>${c.drivers.map(d=>`<div class="a-drv"><span>${d}</span></div>`).join('')}</div>
+      <div class="drw-sec"><div class="drw-sl">Recommended action</div><div class="prov" style="color:var(--ink-2)">${c.rec}</div></div>
+      <div class="drw-sec"><div class="drw-sl">Evidence & provenance</div>${c.evidence.map(e=>`<div class="evi"><span class="src">${e[0]}</span><span>${e[1]}</span></div>`).join('')}</div>
+      <div class="drw-sec"><div class="prov">Confidence <b>${c.conf}</b> · freshness <b>${c.fresh}</b>. Quantitative values from the Quant Engine; the agent ranks, explains and recommends. Approving creates a decision record in the Journal.</div></div>
+      <div style="display:flex;gap:8px"><button class="btn pri" data-approve>Approve</button><button class="btn gh" data-goto="scenarios">Modify in what-if</button><button class="btn gh">Dismiss</button></div>
+    </div>`);
+}
+
+function openPos(tk){
+  const p=positions().find(x=>x[0]===tk); if(!p){return;}
+  const hc=p[17]==='GOOD'?'ok':p[17]==='TRIM'?'crit':'warn';
+  openDrw(`<div class="drw-h"><div class="drw-top"><span class="fs-ic" style="background:var(--ink)">${p[0].slice(0,2)}</span><div><div class="drw-ttl" style="font-size:18px">${p[0]}</div><div class="mut" style="font-size:12px">${p[1]} · ${p[12]}</div></div><button class="drw-x" id="drw-x">✕</button></div>
+    <div class="tabs"><span class="tab on" data-tab="ov">Overview</span><span class="tab" data-tab="risk">Risk</span><span class="tab" data-tab="intel">Intelligence</span><span class="tab" data-tab="thesis">Thesis</span></div></div>
+    <div class="drw-b">
+      <div data-tabc="ov"><div class="kv2" style="margin-bottom:16px">
+        <div class="c"><div class="k">Market value</div><div class="v num">${Math.abs(p[4]).toFixed(1)}M</div></div>
+        <div class="c"><div class="k">% NAV</div><div class="v num">${p[5]}%</div></div>
+        <div class="c"><div class="k">Day PnL</div><div class="v num ${cls(p[6])}">${sgn(p[6])}M</div></div>
+        <div class="c"><div class="k">YTD PnL</div><div class="v num ${cls(p[8])}">${sgn(p[8])}M</div></div>
+        <div class="c"><div class="k">VaR contribution</div><div class="v num">${p[9]}%</div></div>
+        <div class="c"><div class="k">Risk budget used</div><div class="v num ${p[11]>=90?'neg':''}">${p[11]}%</div></div>
+        <div class="c"><div class="k">Beta</div><div class="v num">${p[18]}</div></div>
+        <div class="c"><div class="k">Crowding</div><div class="v" style="font-size:13px">${p[14]}</div></div></div>
+        <div class="drw-sl">Point view</div>
+        <div class="prov" style="color:var(--ink-2);margin-bottom:12px"><b>Conductor conclusion:</b> ${p[17]==='TRIM'?'Trim — high risk budget for low/negative return.':p[17]==='WATCH'?'Hold / do not add — upside momentum intact but concentration and macro beta make incremental exposure unattractive.':'Core holding — thesis intact, efficient risk.'}</div>
+        <div class="drw-sl">Contributing agents</div>
+        ${[['Risk',p[17]==='TRIM'?'NEGATIVE':'NEUTRAL'],['Technical',p[6]>=0?'POSITIVE':'NEGATIVE'],['Flows',p[14]==='High'?'CROWDED':'POSITIVE'],['Macro','NEGATIVE'],['Earnings',p[16]==='—'?'NEUTRAL':'WATCH']].map(a=>`<div class="a-drv"><span>${a[0]} Agent</span><span class="pill ${a[1]==='POSITIVE'?'ok':a[1]==='NEGATIVE'||a[1]==='CROWDED'?'crit':'neu'}" style="font-size:9.5px">${a[1]}</span></div>`).join('')}
+      </div>
+      <div data-tabc="risk" style="display:none"><div class="kv2" style="margin-bottom:12px"><div class="c"><div class="k">VaR contribution</div><div class="v num">${p[9]}%</div></div><div class="c"><div class="k">Risk budget</div><div class="v num">${p[10]}%</div></div><div class="c"><div class="k">Used</div><div class="v num ${p[11]>=90?'neg':''}">${p[11]}%</div></div><div class="c"><div class="k">Return contribution</div><div class="v num ${cls(p[19])}">${sgn(p[19],'%')}</div></div><div class="c"><div class="k">Liquidity</div><div class="v num">${p[15]} days</div></div><div class="c"><div class="k">Factor</div><div class="v" style="font-size:13px">${p[13]}</div></div></div>
+        <div class="prov">Efficiency: ${p[19]>=8?'<b style="color:var(--pos)">GOOD</b> — strong return per unit of risk.':p[19]>=0?'<b style="color:var(--warn)">FAIR</b>.':'<b style="color:var(--crit)">POOR</b> — high risk for negative return, trim candidate.'}</div></div>
+      <div data-tabc="intel" style="display:none"><div class="drw-sl">Recent filings & news</div>
+        <div class="evi"><span class="src">8-K</span><span>Material agreement filed · 1d ago</span></div>
+        <div class="evi"><span class="src">Form 4</span><span>Insider activity · aggregated</span></div>
+        <div class="evi"><span class="src">Analyst</span><span>Estimate revisions trending ${p[6]>=0?'up':'down'}</span></div>
+        <div class="drw-sl" style="margin-top:14px">Sentiment</div><div class="kv2"><div class="c"><div class="k">Current</div><div class="v num">67 / 100</div></div><div class="c"><div class="k">30D change</div><div class="v num pos">+14</div></div></div>
+        <div class="drw-sl" style="margin-top:14px">Catalyst</div><div class="prov">${p[16]==='—'?'No scheduled catalyst in the next 30 days.':p[16]}</div></div>
+      <div data-tabc="thesis" style="display:none">
+        <div class="drw-sl">Thesis alignment</div>
+        <div class="kv2" style="margin-bottom:12px"><div class="c"><div class="k">Current</div><div class="v num ${p[17]==='TRIM'?'neg':''}">${p[17]==='TRIM'?'61%':'82%'}</div></div><div class="c"><div class="k">Previous</div><div class="v num">86%</div></div></div>
+        ${p[17]==='TRIM'?`<div class="drw-sl">New evidence contradicting thesis</div><div class="prov" style="color:var(--ink-2)">1. Gross-margin guidance weakened.<br/>2. Capex growth exceeded original assumption.<br/>3. Competitor pricing pressure increased.</div>`:`<div class="prov">Thesis intact. Recorded assumptions remain consistent with latest evidence.</div>`}
+        <div style="margin-top:14px;display:flex;gap:8px"><button class="btn pri" data-goto="scenarios">Run what-if</button><button class="btn gh" data-approve>Log decision</button></div></div>
+    </div>`);
+}
+
+/* ======================= FUND SWITCHER + ROUTING ======================= */
+function renderFundMenu(){
+  const menu=Q('#fundsel-menu');
+  menu.innerHTML=`<div class="nav-lab" style="padding:6px 8px 4px">Switch fund · 4</div>`+Object.entries(FUNDS).map(([id,f])=>`<div class="fund-opt ${id===FUND?'on':''}" data-fund="${id}"><span class="fs-ic" style="background:${f.col}">${f.ic}</span><div><div class="fs-name">${f.name}</div><div class="fs-sub">${f.sub}</div></div><span class="fo-aum num">${f.aum}</span></div>`).join('');
+  menu.querySelectorAll('.fund-opt').forEach(o=>o.onclick=()=>{selectFund(o.dataset.fund);Q('#fundsel').classList.remove('open');});
+}
+function selectFund(id){
+  FUND=id; const f=FUNDS[id];
+  Q('#fs-ic').textContent=f.ic; Q('#fs-ic').style.background=f.col;
+  Q('#fs-name').textContent=f.name; Q('#fs-sub').textContent=f.sub;
+  try{localStorage.setItem('point-inst-fund',id);}catch(e){}
+  renderAll(); renderFundMenu();
+}
+const RENDER={command:renderCommand,portfolio:renderPortfolio,risk:renderRisk,guidelines:renderGuidelines,
+  opportunities:renderOpps,scenarios:renderScenarios,pnl:renderPnl,decisions:renderDecisions,
+  alerts:renderAlerts,ask:renderAsk,reports:renderReports,audit:renderAudit};
+function renderAll(){Object.values(RENDER).forEach(fn=>fn());}
+
+let VIEW='command';
+function go(v){
+  VIEW=v;
+  QA('.view').forEach(s=>s.classList.toggle('on',s.id==='view-'+v));
+  QA('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
+  window.scrollTo(0,0);
+}
+
+/* ======================= WIRE ======================= */
+renderFundMenu();
+try{const sf=localStorage.getItem('point-inst-fund'); if(sf&&FUNDS[sf])FUND=sf; const f=FUNDS[FUND]; Q('#fs-ic').textContent=f.ic;Q('#fs-ic').style.background=f.col;Q('#fs-name').textContent=f.name;Q('#fs-sub').textContent=f.sub;}catch(e){}
+renderAll();
+
+Q('#fundsel-btn').onclick=e=>{e.stopPropagation();Q('#fundsel').classList.toggle('open');};
+document.addEventListener('click',()=>Q('#fundsel').classList.remove('open'));
+Q('#fundsel-menu').onclick=e=>e.stopPropagation();
+
+QA('#nav a').forEach(a=>a.onclick=()=>go(a.dataset.v));
+
+/* delegated clicks */
+document.addEventListener('click',e=>{
+  const nav=e.target.closest('[data-goto]'); if(nav){go(nav.dataset.goto);return;}
+  const card=e.target.closest('[data-card]'); if(card&&!e.target.closest('[data-approve]')&&!e.target.closest('[data-goto]')){openCard(card.dataset.card);return;}
+  const pos=e.target.closest('[data-pos]'); if(pos){openPos(pos.dataset.pos);return;}
+  const pf=e.target.closest('[data-pf]'); if(pf){posFilter=pf.dataset.pf;renderPortfolio();return;}
+  const th=e.target.closest('th[data-sort]'); if(th){const k=+th.dataset.sort; posSort.dir=(posSort.k===k?-posSort.dir:-1);posSort.k=k;renderPortfolio();return;}
+  const hc=e.target.closest('[data-hc]'); if(hc){const c=health()[+hc.dataset.hc];openDrw(`<div class="drw-h"><div class="drw-top"><span class="tag">Health component</span><button class="drw-x" id="drw-x">✕</button></div><div class="drw-ttl">${c[0]} · ${c[1]}/100</div></div><div class="drw-b"><div class="prov" style="color:var(--ink-2);font-size:13px">${c[3]}</div><div class="kv2" style="margin-top:14px"><div class="c"><div class="k">Current</div><div class="v num">${c[1]}</div></div><div class="c"><div class="k">Yesterday</div><div class="v num">${c[1]-c[2]}</div></div><div class="c"><div class="k">Change</div><div class="v num ${cls(c[2])}">${sgn(c[2])}</div></div><div class="c"><div class="k">Benchmark</div><div class="v num">${c[4]}</div></div></div></div>`);return;}
+  const lim=e.target.closest('[data-limit]'); if(lim){openLimit(lim.dataset.limit);return;}
+  const sg=e.target.closest('[data-ask]'); if(sg){askQ(sg.dataset.ask);return;}
+});
+function openLimit(name){
+  const r=LIMITS.find(x=>x[0]===name); if(!r)return;
+  openDrw(`<div class="drw-h"><div class="drw-top"><span class="pill ${r[9]==='WARN'?'warn':'ok'}">${r[9]}</span><span class="tag">${r[1]}</span><button class="drw-x" id="drw-x">✕</button></div><div class="drw-ttl">${r[0]}</div></div>
+    <div class="drw-b"><div class="kv2" style="margin-bottom:16px"><div class="c"><div class="k">Current</div><div class="v num">${r[2]}</div></div><div class="c"><div class="k">Warning</div><div class="v num">${r[3]}</div></div><div class="c"><div class="k">Limit</div><div class="v num">${r[4]}</div></div><div class="c"><div class="k">Headroom</div><div class="v num">${r[5]}</div></div></div>
+    <div class="drw-sl">Breach forecast</div><div class="kv2" style="margin-bottom:16px"><div class="c"><div class="k">1 day</div><div class="v num ${parseFloat(r[6])>40?'neg':''}">${r[6]}</div></div><div class="c"><div class="k">3 day</div><div class="v num">${r[7]}</div></div><div class="c"><div class="k">5 day</div><div class="v num">${r[8]}</div></div><div class="c"><div class="k">Trend</div><div class="v" style="font-size:13px">${r[9]==='WARN'?'Deteriorating':'Stable'}</div></div></div>
+    <div class="drw-sl">Source clause</div><div class="prov" style="color:var(--ink-2)"><b>Document:</b> ${r[1].includes('IMA')?'Investment Management Agreement':'Risk Policy'}<br/><b>Section:</b> ${r[1].split('§')[1]||'—'}<br/><b>Machine rule:</b> <span class="mono">metric ${r[0].toLowerCase().replace(/[^a-z]/g,'_')} ≤ ${r[4]}</span><br/><b>Approved by:</b> Jane Smith (Compliance)<br/><b>Version:</b> 3 · Sep 21, 2026</div>
+    <div style="margin-top:14px;display:flex;gap:8px"><button class="btn pri" data-goto="scenarios">Run what-if</button><button class="btn gh">View positions</button></div></div>`);
+}
+function askQ(q){
+  const log=Q('#chatlog');
+  log.insertAdjacentHTML('beforeend',`<div class="q-bub">${q}</div>`+answerBubble(ANSWERS.default));
+  log.lastElementChild.scrollIntoView({behavior:'smooth'});
+}
+Q('#view-ask').addEventListener?.('click',()=>{}); // noop guard
+document.addEventListener('click',e=>{
+  if(e.target.id==='ask-send'){const inp=Q('#ask-in');if(inp&&inp.value.trim()){askQ(inp.value.trim());inp.value='';}}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='ask-in'&&e.target.value.trim()){askQ(e.target.value.trim());e.target.value='';}});
+Q('#ask-mini-in')?.addEventListener('keydown',e=>{if(e.key==='Enter'){go('ask');}});
+Q('#ask-mini')?.addEventListener('click',()=>go('ask'));
+
+/* role picker */
+const ROLES=[['PM · Apex L/S','command'],['Head of Risk','risk'],['CIO','portfolio'],['Compliance','guidelines'],['Investor Relations','reports']];
+let roleI=0;
+Q('#role-pick').onclick=()=>{roleI=(roleI+1)%ROLES.length;Q('#rp-role').textContent=ROLES[roleI][0];go(ROLES[roleI][1]);};
+})();
+
+</script>
+</body>
+</html>
